@@ -6,3 +6,13 @@ vagrant/site.retry
 vagrant/a4keypair.pem
 .idea/
 *.iml
+
+scrape/output.txt
+scrape/proxies.txt
+scrape/node_modules
+app/sandbox/output.txt
+.cache-*
+
+# we really shouldn't be pushing environment files
+.env
+env.bat
