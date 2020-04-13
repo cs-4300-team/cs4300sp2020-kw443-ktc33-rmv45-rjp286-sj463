@@ -27,3 +27,11 @@ def get_scraped(user_id):
     return scraped_users.find_one({
         u"user_id": user_id
     })
+
+def find_playlist(id):
+    return playlists.find_one({
+        u"id": id
+    })
+
+def find_playlists(query=None):
+    return playlists.find(query)
