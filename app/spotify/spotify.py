@@ -29,3 +29,9 @@ def get_playlist_tracks(id, fields=None, abort=-1):
             # abort if there's more than 500 tracks
             break
     return tracks
+
+def get_song(id):
+    return spotify.track(id)
+
+def get_song_features(id):
+    return spotify.audio_features([id])[0]
