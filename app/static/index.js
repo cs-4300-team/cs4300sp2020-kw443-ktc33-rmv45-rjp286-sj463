@@ -40,10 +40,15 @@ function output() {
     if (xhr.status != 200) { // analyze HTTP status of the response
       alert(`Error ${xhr.status}: ${xhr.statusText}`); // e.g. 404: Not Found
     } else { // show the result
-      alert(`Done, got ${xhr.response}`); // responseText is the server
+      let output = JSON.parse(xhr.response);
+      let string_output = "";
+      document.getElementById("output_label").innerHTML = "Outputs:";
+      for (let i = 0; i < output.length; i++) {
+        string_output = string_output + " <br /> " + output[i];
+      }
+      document.getElementById("response").innerHTML = string_output;
+      // alert(`Done, got ${xhr.response}`); // responseText is the server
     }
   };
-  console.log("blah");
   console.log("done");
-  document.getElementById("output_text").innerHTML = "Outputs:";
 }

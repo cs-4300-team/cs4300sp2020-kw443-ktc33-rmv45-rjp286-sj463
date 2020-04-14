@@ -17,7 +17,6 @@
     <span style="color: #1DB954;"> App</span>
   </h1>
   <div id="app">{{input}}
-    <label id="output_text"></label>
     <div class="comment-bar">
       <!-- <textarea cols="100">Enter input here.</textarea> -->
       <input id="input_text" type="text" size="75" placeholder="Add to Your Playlists.">
@@ -27,7 +26,9 @@
     <p id="input_list"></p>
     <br>
   </div>
-  <button type="button" style="background-color: green;color: white;" onclick="output()">Go!</button>
+  <div> <button type="button" style="background-color: green;color: white;" onclick="output()">Go!</button></div>
+  <div id="output_label"></div>
+  <div style="overflow:auto; max-height:300px"><label id="response"></label></div>
   <script src="/static/index.js"></script>
 </body>
 
