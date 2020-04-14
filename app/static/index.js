@@ -31,6 +31,19 @@ function removeRow(input) {
 }
 
 function output() {
+  var data = "link=https://open.spotify.com/playlist/5hOxxrUnRYpf6XVScyjF0Y&link=https://open.spotify.com/playlist/48KXkzzA9xkonptFgWx1a9"
+  let xhr = new XMLHttpRequest();
+  xhr.open("POST", "http://0.0.0.0:5000", true);
+  xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+  xhr.send(data);
+  xhr.onload = function () {
+    if (xhr.status != 200) { // analyze HTTP status of the response
+      alert(`Error ${xhr.status}: ${xhr.statusText}`); // e.g. 404: Not Found
+    } else { // show the result
+      alert(`Done, got ${xhr.response}`); // responseText is the server
+    }
+  };
+  console.log("blah");
   console.log("done");
-  document.getElementById("output_text").innerHTML = "Outputs:"
+  document.getElementById("output_text").innerHTML = "Outputs:";
 }
