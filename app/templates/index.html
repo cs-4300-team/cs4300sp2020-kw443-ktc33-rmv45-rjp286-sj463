@@ -16,18 +16,36 @@
     <span style="color: black;">Playlist</span>
     <span style="color: #1DB954;"> App</span>
   </h1>
-  <div id="app">{{input}}
-    <label id="output_text"></label>
+  <div id="app">Input
+    <label id="output_text" v-if="outputs">Outputs</label>
     <div class="comment-bar">
       <!-- <textarea cols="100">Enter input here.</textarea> -->
-      <input id="input_text" type="text" size="75" placeholder="Add to Your Playlists.">
-      <button type="button" onclick="addInput()">+</button>
+      <input id="input_text" type="text" size="75" placeholder="Add to Your Playlists." 
+        v-model="input">
+      <button type="button" v-on:click="addInput">+</button>
     </div>
     Your Playlists:
     <p id="input_list"></p>
+    <!-- Equivalent javscript: 
+    var new_input = document.getElementById("input_text").value;
+    if (inputSet.has(new_input) == false && new_input != "" && new_input != "Enter input.") {
+      inputSet.add(new_input);
+      const div = document.createElement('div');
+      div.className = 'row';
+      div.innerHTML = `
+     <span>`+ new_input + `</span>
+      <input id="`+ new_input + `" type="button" value="X" onclick="removeRow(this)" />
+    `;
+      document.getElementById('input_list').appendChild(div);
+    } -->
+    <div class="row" v-for="input_val in inputSet" :key="input_val">
+      <span>{{ input_val }}</span>
+      <input id="`+ new_input + `" type="button" value="X" v-on:click="removeRow(input_val)" />
+    </div>
+
     <br>
+    <button type="button" style="background-color: green;color: white;" v-on:click="output">Go!</button>
   </div>
-  <button type="button" style="background-color: green;color: white;" onclick="output()">Go!</button>
   <script src="/static/index.js"></script>
 </body>
 

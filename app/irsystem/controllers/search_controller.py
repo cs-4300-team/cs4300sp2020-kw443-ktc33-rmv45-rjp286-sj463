@@ -3,6 +3,7 @@ from app.irsystem.models.helpers import *
 from app.irsystem.models.helpers import NumpyEncoder as NumpyEncoder
 
 from flask_restful import reqparse
+from flask import send_from_directory
 
 from app.spotify import spotify
 
@@ -22,7 +23,7 @@ def search():
 		else:
 			output_message = "Your search: " + query
 			data = range(5)
-		return render_template('index.html')
+		return send_from_directory('templates', 'index.html')
 	else: 
 		# argument is an array of playlist links
 		args = parser.parse_args()
