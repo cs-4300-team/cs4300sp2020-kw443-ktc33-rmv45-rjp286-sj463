@@ -35,3 +35,9 @@ def get_song(id):
 
 def get_song_features(id):
     return spotify.audio_features([id])[0]
+
+def get_mult_songs(ids):
+    return spotify.tracks(ids)['tracks']
+
+def get_mult_song_features(ids):
+    return spotify.audio_features(ids)

@@ -10,7 +10,7 @@ db = client.playlist
 # grab the "playlists" collection
 playlists = db.playlists
 scraped_users = db.scrapedusers
-songs = db.songs
+songs = db.songs_temp
 
 def put_playlist(playlist):
     """Add a playlist to the database"""
