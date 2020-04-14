@@ -31,33 +31,35 @@ function removeRow(input) {
 }
 
 function output() {
-  var data = "";
-  inputSet.forEach((item) => {
-    if (data === "") {
-      data += ("link=" + item);
-    }
-    else {
-      data += ("&link=" + item);
-    }
-  })
-  // var data = "link=https://open.spotify.com/playlist/5hOxxrUnRYpf6XVScyjF0Y&link=https://open.spotify.com/playlist/48KXkzzA9xkonptFgWx1a9"
-  let xhr = new XMLHttpRequest();
-  xhr.open("POST", "http://0.0.0.0:5000", true);
-  xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
-  xhr.send(data);
-  xhr.onload = function () {
-    if (xhr.status != 200) { // analyze HTTP status of the response
-      alert(`Error ${xhr.status}: ${xhr.statusText}`); // e.g. 404: Not Found
-    } else { // show the result
-      let output = JSON.parse(xhr.response);
-      let string_output = "";
-      document.getElementById("output_label").innerHTML = "Outputs:";
-      for (let i = 0; i < output.length; i++) {
-        string_output = string_output + " <br /> " + output[i];
+  if (inputSet.size > 0) {
+    var data = "";
+    inputSet.forEach((item) => {
+      if (data === "") {
+        data += ("link=" + item);
       }
-      document.getElementById("response").innerHTML = string_output;
-      // alert(`Done, got ${xhr.response}`); // responseText is the server
-    }
-  };
-  console.log("done");
+      else {
+        data += ("&link=" + item);
+      }
+    })
+    // var data = "link=https://open.spotify.com/playlist/5hOxxrUnRYpf6XVScyjF0Y&link=https://open.spotify.com/playlist/48KXkzzA9xkonptFgWx1a9"
+    let xhr = new XMLHttpRequest();
+    xhr.open("POST", "http://0.0.0.0:5000", true);
+    xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+    xhr.send(data);
+    xhr.onload = function () {
+      if (xhr.status != 200) { // analyze HTTP status of the response
+        alert(`Error ${xhr.status}: ${xhr.statusText}`); // e.g. 404: Not Found
+      } else { // show the result
+        let output = JSON.parse(xhr.response);
+        let string_output = "";
+        document.getElementById("output_label").innerHTML = "Outputs:";
+        for (let i = 0; i < output.length; i++) {
+          string_output = string_output + " <br /> " + output[i];
+        }
+        document.getElementById("response").innerHTML = string_output;
+        // alert(`Done, got ${xhr.response}`); // responseText is the server
+      }
+    };
+    console.log("done");
+  }
 }
