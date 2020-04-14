@@ -6,7 +6,8 @@ function addInput() {
   const new_input = this.input // this.input "models" the input from html
   // var new_input = document.getElementById("input_text").value;
 
-  if(new_input) { // this checks for empty string
+  if(new_input &&
+    new_input.includes("https://open.spotify.com/playlist/")) { // this checks for empty string
     // todo: better input validation
     this.inputSet.add(new_input); // dont need to check for membership since it's a set
   }
