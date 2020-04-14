@@ -18,3 +18,8 @@ p {
 #output_list {
   padding-left: 610px;
 }
+
+div {
+  margin: auto;
+  text-align:center; 
+}

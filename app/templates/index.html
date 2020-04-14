@@ -17,7 +17,6 @@
     <span style="color: #1DB954;"> App</span>
   </h1>
   <div id="app">Input
-    <label id="output_text" v-if="outputs">Outputs</label>
     <div class="comment-bar">
       <!-- <textarea cols="100">Enter input here.</textarea> -->
       <input id="input_text" type="text" size="75" placeholder="Add to Your Playlists." 
@@ -44,7 +43,9 @@
     </div>
 
     <br>
-    <button type="button" style="background-color: green;color: white;" v-on:click="output">Go!</button>
+    <button type="button" style="background-color: green;color: white;" v-on:click="output">Go!</button><br>
+    <label v-if="outputs.length">Outputs:</label>
+    <div style="overflow:auto; max-height:300px"><pre>{{stringOutput}}</pre></div>
   </div>
   <script src="/static/index.js"></script>
 </body>

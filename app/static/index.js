@@ -58,7 +58,7 @@ function output() {
   })
     .then(res => res.json())
     .then(songs => {
-      this.output = songs;
+      this.outputs = songs;
     })
     .catch(e => {
       console.error(e);
@@ -70,8 +70,9 @@ const app = new Vue({
   el: '#app',
   data: {
     input: '',
-    inputSet: new Set(),
-    outputs: []
+    inputSet: new Set(['https://open.spotify.com/playlist/5hOxxrUnRYpf6XVScyjF0Y', 
+      'https://open.spotify.com/playlist/48KXkzzA9xkonptFgWx1a9']),
+    outputs: [],
   },
   methods: {
     addInput,
@@ -81,6 +82,11 @@ const app = new Vue({
       this.$forceUpdate();
     },
     output
+  },
+  computed: {
+    stringOutput() {
+      return this.outputs.join("\n")
+    }
   }
 });
 
