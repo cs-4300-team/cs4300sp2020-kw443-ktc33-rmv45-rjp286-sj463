@@ -34,3 +34,7 @@ div {
   margin: auto;
   text-align:center; 
 }
+
+#error_message {
+  color:red; 
+}

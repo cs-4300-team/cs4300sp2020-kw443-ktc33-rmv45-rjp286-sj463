@@ -12,14 +12,39 @@ function addInput() {
   // source used to add/remove elements
   var new_input = document.getElementById("input_text").value;
   if (inputSet.has(new_input) == false && new_input != "" && new_input != "Enter input." && new_input.includes("https://open.spotify.com/playlist/")) {
-    inputSet.add(new_input);
-    const div = document.createElement('div');
-    div.className = 'row';
-    div.innerHTML = `
-   <span>`+ new_input + `</span>
-    <input id="`+ new_input + `" type="button" value="X" onclick="removeRow(this)" />
-  `;
-    document.getElementById('input_list').appendChild(div);
+
+    var data = "link=" + new_input + "&get_playlist=true";
+    fetch('/', {
+      method: 'POST',
+      headers: {
+        "Content-Type": "application/x-www-form-urlencoded"
+      },
+      body: data
+    })
+      .then(res => res.json())
+      .then(info => {
+        // let string_output = "";
+        // this.outputs = songs;
+        // for (let i = 0; i < this.outputs.length; i++) {
+        //   string_output = string_output + " <br /> " + this.outputs[i];
+        // }
+        // document.getElementById("output_label").innerHTML = "Outputs:";
+        // document.getElementById("response").innerHTML = string_output;
+        inputSet.add(new_input);
+        const div = document.createElement('div');
+        div.className = 'row';
+        div.innerHTML = `<img src=url(` + info['images'] + `)></img>
+       <span>`+ info['name'] + `</span>
+        <input id="`+ new_input + `" type="button" value="X" onclick="removeRow(this)" />`;
+        document.getElementById('input_list').appendChild(div);
+        console.log(info);
+        document.getElementById("error_message").style.display = 'none';
+      })
+      .catch(e => {
+        console.log("ERROR");
+        document.getElementById("error_message").style.display = 'block';
+        document.getElementById("error_message").innerHTML = "Sorry, your playlist link appears to be invalid. Please try another link."
+      })
   }
   document.getElementById('input_text').value = "";
   document.getElementById('input_text').placeholder = "Add to Your Playlists.";
@@ -41,25 +66,39 @@ function output() {
         data += ("&link=" + item);
       }
     })
-    // var data = "link=https://open.spotify.com/playlist/5hOxxrUnRYpf6XVScyjF0Y&link=https://open.spotify.com/playlist/48KXkzzA9xkonptFgWx1a9"
-    let xhr = new XMLHttpRequest();
-    xhr.open("POST", "http://0.0.0.0:5000", true);
-    xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
-    xhr.send(data);
-    xhr.onload = function () {
-      if (xhr.status != 200) { // analyze HTTP status of the response
-        alert(`Error ${xhr.status}: ${xhr.statusText}`); // e.g. 404: Not Found
-      } else { // show the result
-        let output = JSON.parse(xhr.response);
+    data += ("&get_playlist=false");
+    fetch('/', {
+      method: 'POST',
+      headers: {
+        "Content-Type": "application/x-www-form-urlencoded"
+      },
+      body: data
+    })
+      .then(res => res.json())
+      .then(songs => {
         let string_output = "";
-        document.getElementById("output_label").innerHTML = "Outputs:";
-        for (let i = 0; i < output.length; i++) {
-          string_output = string_output + " <br /> " + output[i];
+        song_outputs = songs;
+        for (let i = 0; i < song_outputs.length; i++) {
+          string_output += " <br /> " + song_outputs[i].name;
+          artist_output = "";
+          for (let j = 0; j < song_outputs[i]['artists'].length; j++) {
+            if (j > 0) {
+              artist_output += ",";
+            }
+            artist_output += " " + song_outputs[i]['artists'][j]['name'];
+          }
+          string_output += artist_output;
         }
+        document.getElementById("error_message").style.display = 'none';
+        document.getElementById("output_label").innerHTML = "Outputs:";
         document.getElementById("response").innerHTML = string_output;
-        // alert(`Done, got ${xhr.response}`); // responseText is the server
-      }
-    };
+        // console.log(songs);
+      })
+      .catch(e => {
+        console.log("ERROR")
+        document.getElementById("error_message").style.display = 'block';
+        document.getElementById("error_message").innerHTML = "Sorry, it looks like something went wrong."
+      })
     console.log("done");
   }
 }
