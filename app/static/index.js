@@ -6,10 +6,47 @@ function addInput() {
   const new_input = this.input // this.input "models" the input from html
   // var new_input = document.getElementById("input_text").value;
 
-  if(new_input &&
+  if (new_input &&
     new_input.includes("https://open.spotify.com/playlist/")) { // this checks for empty string
     // todo: better input validation
-    this.inputSet.add(new_input); // dont need to check for membership since it's a set
+    // this.inputSet.add(new_input); // dont need to check for membership since it's a set
+    // this.inputSet[new_input] = "blah";
+    // console.log(this.inputSet);
+
+    var data = "link=" + new_input + "&get_playlist=true";
+    fetch('/', {
+      method: 'POST',
+      headers: {
+        "Content-Type": "application/x-www-form-urlencoded"
+      },
+      body: data
+    })
+      .then(res => res.json())
+      .then(info => {
+        // let string_output = "";
+        // this.outputs = songs;
+        // for (let i = 0; i < this.outputs.length; i++) {
+        //   string_output = string_output + " <br /> " + this.outputs[i];
+        // }
+        // document.getElementById("output_label").innerHTML = "Outputs:";
+        // document.getElementById("response").innerHTML = string_output;
+        this.inputSet[new_input] = info['name'];
+        // console.log(this.inputSet);
+        this.error_message = '';
+        this.$forceUpdate();
+        //   const div = document.createElement('div');
+        //   div.className = 'row';
+        //   div.innerHTML = `<img src=url(` + info['images'] + `)></img>
+        //  <span>`+ info['name'] + `</span>
+        //   <input id="`+ new_input + `" type="button" value="X" onclick="removeRow(this)" />`;
+        //   document.getElementById('input_list').appendChild(div);
+        //   console.log(info);
+        //   document.getElementById("error_message").style.display = 'none';
+      })
+      .catch(e => {
+        console.log("ERROR");
+        this.error_message = 'Sorry, your playlist link appears to be invalid. Please try another link.';
+      })
   }
   /* Equivalent to: */
   // if (inputSet.has(new_input) == false && new_input != "" && new_input != "Enter input.") {
@@ -32,7 +69,8 @@ function addInput() {
 
 function output() {
   // var data = "link=https://open.spotify.com/playlist/5hOxxrUnRYpf6XVScyjF0Y&link=https://open.spotify.com/playlist/48KXkzzA9xkonptFgWx1a9"
-  const data = [...this.inputSet].map(link => `link=${link}`).join('&')
+  let data = (Object.keys(this.inputSet)).map(link => `link=${link}`).join('&')
+  data += "&get_playlist=false";
 
   // let xhr = new XMLHttpRequest();
   // xhr.open("POST", "/", true);
@@ -60,9 +98,11 @@ function output() {
     .then(res => res.json())
     .then(songs => {
       this.outputs = songs;
+      this.error_message = '';
     })
     .catch(e => {
-      console.error(e);
+      console.log("ERROR");
+      this.error_message = 'Sorry, there appears to be a problem.';
       // error handle here!
     })
 }
@@ -71,14 +111,14 @@ const app = new Vue({
   el: '#app',
   data: {
     input: '',
-    inputSet: new Set(['https://open.spotify.com/playlist/5hOxxrUnRYpf6XVScyjF0Y', 
-      'https://open.spotify.com/playlist/48KXkzzA9xkonptFgWx1a9']),
+    inputSet: {},
     outputs: [],
+    error_message: ''
   },
   methods: {
     addInput,
     removeRow(input) {
-      this.inputSet.delete(input);
+      delete this.inputSet[input];
       // have to do because of set
       this.$forceUpdate();
     },

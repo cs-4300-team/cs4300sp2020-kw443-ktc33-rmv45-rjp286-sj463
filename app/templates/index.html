@@ -10,42 +10,37 @@
 <html>
 
 <body>
-  <!-- <h1>Party Playlist App</h1> -->
-  <h1 align="center" style="font-size: 55px; font-family:Futura; color: #1DB954">
-    Party
+  <h1>
+    <span style="color: #1DB954">Party</span>
     <span style="color: black;">Playlist</span>
     <span style="color: #1DB954;"> App</span>
   </h1>
   <div id="app">Input
     <div class="comment-bar">
       <!-- <textarea cols="100">Enter input here.</textarea> -->
-      <input id="input_text" type="text" size="75" placeholder="Add to Your Playlists." 
-        v-model="input">
+      <input id="input_text" type="text" size="75" placeholder="Add to Your Playlists." v-model="input">
       <button type="button" v-on:click="addInput">+</button>
     </div>
-    Your Playlists:
-    <p id="input_list"></p>
-    <!-- Equivalent javscript: 
-    var new_input = document.getElementById("input_text").value;
-    if (inputSet.has(new_input) == false && new_input != "" && new_input != "Enter input.") {
-      inputSet.add(new_input);
-      const div = document.createElement('div');
-      div.className = 'row';
-      div.innerHTML = `
-     <span>`+ new_input + `</span>
-      <input id="`+ new_input + `" type="button" value="X" onclick="removeRow(this)" />
-    `;
-      document.getElementById('input_list').appendChild(div);
-    } -->
-    <div class="row" v-for="input_val in inputSet" :key="input_val">
-      <span>{{ input_val }}</span>
-      <input id="`+ new_input + `" type="button" value="X" v-on:click="removeRow(input_val)" />
+
+    <span id="error_label" v-if="error_message">{{ error_message }}<br></span>
+
+    <span>Your Playlists: </span>
+    <div class="row" v-for="(val, input_key) in inputSet" :key=input_key>
+      <span>{{ val }}</span>
+      <button id="`+ new_input + `" v-on:click="removeRow(input_key)">X</button>
+    </div> <br>
+
+    <button type="button" style="background-color: green;color: white;" v-on:click="output">Go!</button><br>
+
+    <label v-if="outputs.length">Outputs:</label>
+    <div style="overflow:auto; max-height:300px; width:50%">
+      <!-- <pre>{{stringOutput}}</pre> -->
+      <div class="song_display" v-for="item in outputs">
+        <span>{{ item.name }}</span>
+        <span class="song_artists">{{ item.artists }} </span>
+      </div>
     </div>
 
-    <br>
-    <button type="button" style="background-color: green;color: white;" v-on:click="output">Go!</button><br>
-    <label v-if="outputs.length">Outputs:</label>
-    <div style="overflow:auto; max-height:300px"><pre>{{stringOutput}}</pre></div>
   </div>
   <script src="/static/index.js"></script>
 </body>
