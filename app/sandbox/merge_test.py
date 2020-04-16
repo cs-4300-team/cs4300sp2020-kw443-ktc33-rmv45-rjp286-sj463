@@ -1,11 +1,15 @@
 import sys
 sys.path.insert(0, '..')
+#sys.path.insert(0, '../..')
 # this is necessary to resolve modules
 
 import numpy as np
 
 from database import database
 
+#from irsystem.algorithm import algorithm
+
+#algorithm.merge_playlists(['2dEmomSJHQE2Y5RdHgGzTE', '3sbMiFkUeAkm1GVc4hL37o'])
 
 playlist_1 = database.find_playlist("2dEmomSJHQE2Y5RdHgGzTE") # bunkin
 # playlist_1 = database.find_playlist("5hOxxrUnRYpf6XVScyjF0Y") # everybody knows

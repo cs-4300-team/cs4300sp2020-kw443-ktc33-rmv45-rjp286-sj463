@@ -34,3 +34,9 @@ div .song_display {
 .song_artists {
   color: grey; 
 }
+
+.song_info {
+  text-align: left;
+  vertical-align: top;
+  display:inline-block;
+}
