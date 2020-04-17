@@ -3,8 +3,14 @@ function addInput() {
   // https://stackoverflow.com/questions/17650776/add-remove-html-inside-div-using-javascript
   // source used to add/remove elements
 
-  const new_input = this.input // this.input "models" the input from html
+  let new_input = this.input // this.input "models" the input from html
   // var new_input = document.getElementById("input_text").value;
+  try {
+    const url = new URL(this.input)
+    new_input = url.origin + url.pathname;
+  } catch (e) {
+    this.error_message = `Error parsing input. Please format it as a link to a playlist`;
+  }
 
   if (new_input &&
     new_input.includes("https://open.spotify.com/playlist/")) { // this checks for empty string
@@ -23,6 +29,8 @@ function addInput() {
 
         this.error_message = '';
         this.$forceUpdate();
+
+        this.updateHash();
       })
       .catch(e => {
         console.log("ERROR");
@@ -72,6 +80,7 @@ const app = new Vue({
       delete this.inputSet[input];
       // have to do because of set
       this.$forceUpdate();
+      this.updateHash();
     },
     output,
     image(song) {
@@ -85,11 +94,34 @@ const app = new Vue({
       } catch (e) {
         return 'static/not_found.png'
       }
+    },
+    updateHash() {
+      const is = this.inputSet
+      let newHash = Object.keys(is)
+        .map(k => [new URL(k).pathname.split('/').pop(), is[k]])
+        .map(([id, name]) => `${id}=${name}`).join('&>>>')
+      window.location.hash = `#${newHash}`
     }
   },
   computed: {
     stringOutput() {
       return this.outputs.join("\n")
     }
+  },
+  mounted() {
+    const hash = decodeURIComponent(window.location.hash);
+    if(!hash || hash.length == 0) {
+      return;
+    }
+    try {
+      const inputs = hash.substring(1).split('&>>>').map(i => i.split(/=(.+)/))
+      for(let [url, name] of inputs) {
+        this.inputSet['https://open.spotify.com/playlist/' + url] = decodeURIComponent(name)
+      }
+      this.$forceUpdate();
+    } catch (e) {
+      window.location.hash = ''
+    }
+
   }
 });
