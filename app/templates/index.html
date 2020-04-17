@@ -35,9 +35,12 @@
     <label v-if="outputs.length">Outputs:</label>
     <div style="overflow:auto; max-height:300px; width:50%">
       <!-- <pre>{{stringOutput}}</pre> -->
-      <div class="song_display" v-for="item in outputs">
-        <span>{{ item.name }}</span>
-        <span class="song_artists">{{ item.artists }} </span>
+      <div class="song_display" v-for="item in outputs" v-if="item && item.name">
+        <img v-bind:src="image(item)" />
+        <div class="song_info">
+          <span>{{ item.name }}</span><br />
+          <span class="song_artists">{{ item.artists && item.artists.join(', ') || 'Unknown Artist'}} </span>
+        </div>
       </div>
     </div>
 

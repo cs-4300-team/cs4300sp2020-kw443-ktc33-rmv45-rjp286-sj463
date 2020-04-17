@@ -6,6 +6,7 @@ from flask_restful import reqparse
 from flask import send_from_directory
 
 from app.spotify import spotify
+from app.irsystem.algorithm import basic_merge
 
 parser = reqparse.RequestParser()
 parser.add_argument('link', action='append')
@@ -30,26 +31,10 @@ def search():
 		args = parser.parse_args()
 					
 		if args['get_playlist'] == "false": 
-			track_list = []
-			songs = []
-			try: 
-				for i in range(len(args['link'])):
-					playlist_id = args['link'][i].lstrip('https://open.spotify.com/playlist/')
-					track_list.append(spotify.get_playlist_tracks(playlist_id))
-
-				songs = []
-				for tracks in track_list:
-					for song in tracks:
-						all_artists = ""
-						for artist in song['track']['artists']: 
-							if all_artists == "": 
-								all_artists = artist['name']
-							else: 
-								all_artists += artist['name']
-						songs.append(dict(name=song['track']['name'], artists=all_artists, image=song['track']['album']['images'][0]['url']))
-				# POST can't return a list 
-				return jsonify(songs)
-			except Exception as error: 
+			try:
+				return jsonify(basic_merge.merge_playlists(args['link']))
+			except Exception as error:
+				print(error)
 				return error
 		else:
 			try:

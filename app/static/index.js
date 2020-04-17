@@ -73,7 +73,19 @@ const app = new Vue({
       // have to do because of set
       this.$forceUpdate();
     },
-    output
+    output,
+    image(song) {
+      if(!song || !song.images || song.images.length === 0) {
+        return 'static/not_found.png'
+      }
+      // use spread here to avoid mutating song
+      try {
+        const sorted = [...song.images].sort((a, b) => b.height - a.height);
+        return sorted[sorted.length - 1].url
+      } catch (e) {
+        return 'static/not_found.png'
+      }
+    }
   },
   computed: {
     stringOutput() {
