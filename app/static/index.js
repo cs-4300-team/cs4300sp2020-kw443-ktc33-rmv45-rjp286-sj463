@@ -79,8 +79,12 @@ const app = new Vue({
         return 'static/not_found.png'
       }
       // use spread here to avoid mutating song
-      const sorted = [...song].images.sort((a, b) => b.height - a.height);
-      return sorted[sorted.length - 1].url
+      try {
+        const sorted = [...song.images].sort((a, b) => b.height - a.height);
+        return sorted[sorted.length - 1].url
+      } catch (e) {
+        return 'static/not_found.png'
+      }
     }
   },
   computed: {
