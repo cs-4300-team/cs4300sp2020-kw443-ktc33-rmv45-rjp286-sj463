@@ -2,7 +2,7 @@
 <!-- source used for setup help -->
 
 <head>
-  <link rel="stylesheet" href="/static/index.css">
+  <link rel="stylesheet" href="/static/index-main.css">
   <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
   <!-- <script src="https://cdn.jsdelivr.net/npm/vue@2.6.11"></script> -->
 </head>
@@ -10,26 +10,41 @@
 <html>
 
 <body>
-  <!-- <h1>Party Playlist App</h1> -->
-  <h1 align="center" style="font-size: 55px; font-family:Futura; color: #1DB954">
-    Party
+  <h1>
+    <span style="color: #1DB954">Party</span>
     <span style="color: black;">Playlist</span>
     <span style="color: #1DB954;"> App</span>
   </h1>
-  <div id="app">{{input}}
+  <div id="app">Input
     <div class="comment-bar">
       <!-- <textarea cols="100">Enter input here.</textarea> -->
-      <input id="input_text" type="text" size="75" placeholder="Add to Your Playlists.">
-      <button type="button" onclick="addInput()">+</button>
+      <input id="input_text" type="text" size="75" placeholder="Add to Your Playlists." v-model="input">
+      <button type="button" v-on:click="addInput">+</button>
     </div>
-    <label id="error_message"></label>
-    Your Playlists:
-    <p id="input_list"></p>
-    <br>
+
+    <span id="error_label" v-if="error_message">{{ error_message }}<br></span>
+
+    <span>Your Playlists: </span>
+    <div class="row" v-for="(val, input_key) in inputSet" :key=input_key>
+      <span>{{ val }}</span>
+      <button id="`+ new_input + `" v-on:click="removeRow(input_key)">X</button>
+    </div> <br>
+
+    <button type="button" style="background-color: green;color: white;" v-on:click="output">Go!</button><br>
+
+    <label v-if="outputs.length">Outputs:</label>
+    <div style="overflow:auto; max-height:300px; width:50%">
+      <!-- <pre>{{stringOutput}}</pre> -->
+      <div class="song_display" v-for="item in outputs" v-if="item && item.name">
+        <img v-bind:src="image(item)" />
+        <div class="song_info">
+          <span>{{ item.name }}</span><br />
+          <span class="song_artists">{{ item.artists && item.artists.join(', ') || 'Unknown Artist'}} </span>
+        </div>
+      </div>
+    </div>
+
   </div>
-  <div> <button type="button" style="background-color: green;color: white;" onclick="output()">Go!</button></div>
-  <div id="output_label"></div>
-  <div style="overflow:auto; max-height:300px"><label id="response"></label></div>
   <script src="/static/index.js"></script>
 </body>
 

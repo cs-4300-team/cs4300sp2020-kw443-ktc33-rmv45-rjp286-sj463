@@ -3,8 +3,10 @@ from app.irsystem.models.helpers import *
 from app.irsystem.models.helpers import NumpyEncoder as NumpyEncoder
 
 from flask_restful import reqparse
+from flask import send_from_directory
 
 from app.spotify import spotify
+from app.irsystem.algorithm import basic_merge
 
 parser = reqparse.RequestParser()
 parser.add_argument('link', action='append')
@@ -23,27 +25,18 @@ def search():
 		else:
 			output_message = "Your search: " + query
 			data = range(5)
-		return render_template('index.html')
+		return send_from_directory('templates', 'index.html')
 	else: 
 		# argument is an array of playlist links
 		args = parser.parse_args()
+					
 		if args['get_playlist'] == "false": 
-			track_list = []
-			songs = []
-			try: 
-				for i in range(len(args['link'])):
-					playlist_id = args['link'][i].lstrip('https://open.spotify.com/playlist/')
-					track_list.append(spotify.get_playlist_tracks(playlist_id))
-
-				songs = []
-				for tracks in track_list:
-					for song in tracks:
-						songs.append(dict(name=song['track']['name'], artists=song['track']['artists'], image=song['track']['album']['images'][0]['url']))
-				# POST can't return a list 
-				return jsonify(songs)
-			except Exception as error: 
+			try:
+				return jsonify(basic_merge.merge_playlists(args['link']))
+			except Exception as error:
+				print(error)
 				return error
-		else : 
+		else:
 			try:
 				playlist_info = spotify.get_playlist(args['link'][0].lstrip('https://open.spotify.com/playlist/'))
 				return jsonify(name=playlist_info['name'], image=playlist_info['images'][0]['url'])
