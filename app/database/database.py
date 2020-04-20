@@ -40,6 +40,9 @@ def find_playlists(query=None):
 def find_song(id):
     return songs.find_one({u"id":id})
 
+def find_songs(query=None):
+    return songs.find(query)
+
 def put_song(song):
     """Add a song to the database"""
     songs.insert_one(song)
@@ -50,3 +53,6 @@ def put_songs(song_docs):
 
 def add_song_playlist(id, playlist_id):
     songs.update({"id":id},{"$addToSet":{"playlists":playlist_id}}, w=0)
+
+def set_song_comments(id, comments):
+    songs.update_one({"id": id}, {"$set":{"comments": comments}})
