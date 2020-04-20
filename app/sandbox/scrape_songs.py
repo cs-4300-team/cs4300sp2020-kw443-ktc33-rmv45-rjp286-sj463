@@ -3,6 +3,7 @@ sys.path.insert(0, '..')
 # this is necessary to resolve modules
 
 import time
+from multiprocessing import Process
 
 from spotify import spotify
 from database import database
@@ -34,8 +35,10 @@ def update_songs():
     database.put_songs(to_insert)
     songs.clear()
 
+def update_song_playlist(song_id, playlist_id):
+    database.add_song_playlist(song_id, playlist["id"])
 
-for playlist in playlists[0:100]:
+for playlist in playlists[48:100]:
     for track in playlist["tracks"]:
         if not track or not track["track"]:
             continue
@@ -49,9 +52,12 @@ for playlist in playlists[0:100]:
             else:
                 songs[song_id] = songs[song_id] + [playlist["id"]]
             if(len(songs) == 50):
+                start = time.time()
                 update_songs()
+                end = time.time()
+                print(str(end -start) + "s spend adding songs")
         else:
-            database.add_song_playlist(song_id, playlist["id"])
+            update_song_playlist(song_id, playlist["id"])
     done += 1
     if done % 10 == 0:
         print(done)

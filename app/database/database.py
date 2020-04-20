@@ -49,4 +49,4 @@ def put_songs(song_docs):
     songs.insert_many(song_docs)
 
 def add_song_playlist(id, playlist_id):
-    songs.update({"id":id},{"$addToSet":{"playlists":playlist_id}})
+    songs.update({"id":id},{"$addToSet":{"playlists":playlist_id}}, w=0)
