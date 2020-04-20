@@ -17,6 +17,7 @@ def update_songs():
     keys = songs.keys()
     mult_songs = spotify.get_mult_songs(keys)
     mult_audio_features = spotify.get_mult_song_features(keys)
+    to_insert = []
     for song_id in keys:
         _song = list(filter(lambda x: x and x["id"]==song_id, mult_songs))
         song = len(_song) > 0 and _song[0]
@@ -28,11 +29,13 @@ def update_songs():
             continue
         song["playlists"] = songs[song_id]
         song["features"] = feature
-        database.put_song(song)
+        # database.put_song(song)
+        to_insert.append(song)
+    database.put_songs(to_insert)
     songs.clear()
 
 
-for playlist in playlists[5:100]:
+for playlist in playlists[0:100]:
     for track in playlist["tracks"]:
         if not track or not track["track"]:
             continue
@@ -44,7 +47,7 @@ for playlist in playlists[5:100]:
             if song_id not in songs:
                 songs[song_id] = [playlist["id"]]
             else:
-                songs[song_id] = songs[song_id].append(playlist["id"])
+                songs[song_id] = songs[song_id] + [playlist["id"]]
             if(len(songs) == 50):
                 update_songs()
         else:

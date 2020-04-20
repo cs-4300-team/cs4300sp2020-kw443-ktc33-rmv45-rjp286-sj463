@@ -10,7 +10,7 @@ db = client.playlist
 # grab the "playlists" collection
 playlists = db.playlists
 scraped_users = db.scrapedusers
-songs = db.songs_temp
+songs = db.songs_temp_two
 
 def put_playlist(playlist):
     """Add a playlist to the database"""
@@ -43,6 +43,10 @@ def find_song(id):
 def put_song(song):
     """Add a song to the database"""
     songs.insert_one(song)
+
+def put_songs(song_docs):
+    """Add a song to the database"""
+    songs.insert_many(song_docs)
 
 def add_song_playlist(id, playlist_id):
     songs.update({"id":id},{"$addToSet":{"playlists":playlist_id}})
