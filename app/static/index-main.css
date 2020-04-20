@@ -1,0 +1,42 @@
+body {
+  background-color:lightgrey; 
+  font-family:Futura; 
+  font-size: 20px; 
+}
+
+input, button {
+  font-family:inherit;
+  font-size:inherit; 
+}
+
+h1{
+  text-align:center;
+  font-size:55px;  
+}
+
+.comment-bar {
+  padding: 10px;
+}
+
+div {
+  margin: auto;
+  text-align:center; 
+}
+
+#error_label {
+  color:red; 
+}
+
+div .song_display {
+  text-align:left; 
+}
+
+.song_artists {
+  color: grey; 
+}
+
+.song_info {
+  text-align: left;
+  vertical-align: top;
+  display:inline-block;
+}

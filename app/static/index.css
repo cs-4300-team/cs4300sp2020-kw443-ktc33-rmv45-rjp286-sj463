@@ -1,0 +1,40 @@
+body {
+  background-color:lightgrey; 
+  font-family:Futura; 
+  font-size: 20px; 
+}
+
+input, button {
+  font-family:inherit;
+  font-size:inherit; 
+}
+
+.comment-bar {
+  padding: 10px;
+}
+
+#input_list {
+  padding-left: 10px;
+}
+
+p {
+  margin: 0px;
+  padding: 0px;
+}
+
+#output_text {
+  padding-left: 600px;
+}
+
+#output_list {
+  padding-left: 610px;
+}
+
+div {
+  margin: auto;
+  text-align:center; 
+}
+
+#error_message {
+  color:red; 
+}
