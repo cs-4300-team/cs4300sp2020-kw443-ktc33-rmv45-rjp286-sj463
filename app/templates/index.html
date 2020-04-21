@@ -19,8 +19,22 @@
   <div id="app">Input
     <div class="comment-bar">
       <!-- <textarea cols="100">Enter input here.</textarea> -->
-      <input id="input_text" type="text" size="75" placeholder="Add to Your Playlists." v-model="input">
+      <input id="input_text" type="text" v-bind:size="stuckPopup ? 50 : 75" placeholder="Add to Your Playlists." v-model="input">
       <button type="button" v-on:click="addInput">+</button>
+      <span id="stuck" v-on:click="stuckPopup = !stuckPopup">Stuck?</span>
+
+      <div id="stuck_popup" v-if="stuckPopup">
+        <div id="stuck_popup_contents">
+          Try these example playlists!
+          <ul>
+            <li v-for="example in examples" 
+              v-on:click="setExample(example)"
+              class="example_input">
+              {{example.name}}
+            </li>
+          </ul>
+        </div>
+      </div>
     </div>
 
     <span id="error_label" v-if="error_message">{{ error_message }}<br></span>

@@ -44,6 +44,7 @@ function output() {
   // var data = "link=https://open.spotify.com/playlist/5hOxxrUnRYpf6XVScyjF0Y&link=https://open.spotify.com/playlist/48KXkzzA9xkonptFgWx1a9"
   let data = (Object.keys(this.inputSet)).map(link => `link=${link}`).join('&')
   data += "&get_playlist=false";
+  this.stuckPopup = false;
 
   /* Using modern fetch api which provides a promise:
   https://developer.mozilla.org/en-US/docs/Web/API/Fetch_API/Using_Fetch */
@@ -66,13 +67,20 @@ function output() {
     })
 }
 
+const examplesString = `37i9dQZF1DX9s3cYAeKW5d=Hip-Hop%20Workout%20Mix&%3E%3E%3E37i9dQZF1DX48TTZL62Yht=Hip-Hop%20Favourites&%3E%3E%3E28ONiLZsrlTPUYxmC7ZJ0f=Hip-Hop%20Hits&%3E%3E%3E37i9dQZF1DX8WMG8VPSOJC=Country%20Kind%20of%20Love`
+
 const app = new Vue({
   el: '#app',
   data: {
     input: '',
     inputSet: {},
     outputs: [],
-    error_message: ''
+    examples: decodeURIComponent(examplesString)
+      .split('&>>>')
+      .map(i => i.split(/=(.+)/))
+      .map(([id, name]) => ({id, name})),
+    error_message: '',
+    stuckPopup: false
   },
   methods: {
     addInput,
@@ -101,6 +109,9 @@ const app = new Vue({
         .map(k => [new URL(k).pathname.split('/').pop(), is[k]])
         .map(([id, name]) => `${id}=${name}`).join('&>>>')
       window.location.hash = `#${newHash}`
+    },
+    setExample(example) {
+      this.input = 'https://open.spotify.com/playlist/' + example.id
     }
   },
   computed: {

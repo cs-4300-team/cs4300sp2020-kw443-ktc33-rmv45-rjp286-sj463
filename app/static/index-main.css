@@ -40,3 +40,29 @@ div .song_display {
   vertical-align: top;
   display:inline-block;
 }
+
+#stuck {
+  cursor: pointer;
+  text-decoration: underline;
+}
+
+.example_input {
+  cursor: pointer;
+  text-decoration: underline;
+}
+
+#stuck_popup {
+  display: none;
+  position: absolute;
+  display: inline-block;
+}
+
+#stuck_popup_contents {
+  text-align: left;
+  position: relative;
+  left: 20px;
+  border: 1px solid black;
+  padding: 30px;
+  background: rgba(0,0,0,0.1);
+  box-shadow: 5px 5px 3px #888888;
+}
