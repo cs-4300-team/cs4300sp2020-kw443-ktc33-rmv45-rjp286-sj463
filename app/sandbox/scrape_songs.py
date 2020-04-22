@@ -10,8 +10,6 @@ from database import database
 
 playlists = database.find_playlists()
 
-done = 0
-
 songs = {}
 
 def update_songs():
@@ -38,29 +36,62 @@ def update_songs():
 def update_song_playlist(song_id, playlist_id):
     database.add_song_playlist(song_id, playlist["id"])
 
-for playlist in playlists[48:100]:
-    for track in playlist["tracks"]:
-        if not track or not track["track"]:
-            continue
-        song_id = track["track"]["id"]
-        if not song_id:
-            continue
-        if not database.find_song(song_id):
-            # song = spotify.get_song(song_id)
-            if song_id not in songs:
-                songs[song_id] = [playlist["id"]]
+# done = 900
+# for playlist in playlists[done:1000]:
+#     for track in playlist["tracks"]:
+#         if not track or not track["track"]:
+#             continue
+#         song_id = track["track"]["id"]
+#         if not song_id:
+#             continue
+#         if not database.find_song(song_id):
+#             # song = spotify.get_song(song_id)
+#             if song_id not in songs:
+#                 songs[song_id] = [playlist["id"]]
+#             else:
+#                 songs[song_id] = songs[song_id] + [playlist["id"]]
+#             if(len(songs) == 50):
+#                 update_songs()
+#         else:
+#             update_song_playlist(song_id, playlist["id"])
+#     print(done)
+#     done += 1
+# update_songs()
+
+# We have 30,615 playlists in total
+# So far we have 1-1000 done
+start = 630
+stop = 1000
+failed = []
+
+while start <= stop:
+    try:
+        playlist = playlists[start]
+        for track in playlist["tracks"]:
+            if not track or not track["track"]:
+                continue
+            song_id = track["track"]["id"]
+            if not song_id:
+                    continue
+            if not database.find_song(song_id):
+                # song = spotify.get_song(song_id)
+                if song_id not in songs:
+                    songs[song_id] = [playlist["id"]]
+                else:
+                    songs[song_id] = songs[song_id] + [playlist["id"]]
+                if(len(songs) == 50):
+                    update_songs()
             else:
-                songs[song_id] = songs[song_id] + [playlist["id"]]
-            if(len(songs) == 50):
-                start = time.time()
-                update_songs()
-                end = time.time()
-                print(str(end -start) + "s spend adding songs")
-        else:
-            update_song_playlist(song_id, playlist["id"])
-    done += 1
-    if done % 10 == 0:
-        print(done)
-    else:
-        print(done)
+                update_song_playlist(song_id, playlist["id"])
+        if (start%10==0): print(start)
+        start += 1
+    except KeyboardInterrupt:
+        break
+    except:
+        songs.clear()
+        failed.append(start)
+        print("Failed playlists: " + str(failed))
+        start += 1
 update_songs()
+
+print("Failed playlists: " + str(failed))
