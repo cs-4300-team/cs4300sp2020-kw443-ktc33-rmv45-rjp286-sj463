@@ -1,7 +1,39 @@
+@font-face {
+  font-family: Lineto;
+  src: url(/static/fonts/lineto-circular-pro-book.ttf);
+}
+
+@font-face {
+  font-family: Lineto-Med; 
+  src: url(/static/fonts/lineto-circular-pro-medium.ttf);
+}
+
 body {
-  background-color:lightgrey; 
-  font-family:Futura; 
+  /* background-color:lightgrey;  */
+  background: linear-gradient(90deg, #223a7a 0%, #6ce083 90%);
+  background-size: 400% 400%;
+  -webkit-animation: gradient_move 30s ease infinite;
+  -moz-animation: gradient_move 30s ease infinite;
+  animation: gradient_move 30s ease infinite;
+  font-family:Lineto; 
   font-size: 20px; 
+  color:white; 
+}
+
+@-webkit-keyframes gradient_move {
+  0%{background-position:0% 50%}
+  50%{background-position:100% 50%}
+  100%{background-position:0% 50%}
+}
+@-moz-keyframes gradient_move {
+  0%{background-position:0% 50%}
+  50%{background-position:100% 50%}
+  100%{background-position:0% 50%}
+}
+@keyframes gradient_move {
+  0%{background-position:0% 50%}
+  50%{background-position:100% 50%}
+  100%{background-position:0% 50%}
 }
 
 input, button {
@@ -11,11 +43,28 @@ input, button {
 
 h1{
   text-align:center;
-  font-size:55px;  
+  font-size:4.5em;  
+  color:white; 
+  font-family: Lineto-Med;
+  margin-bottom:0; 
+}
+#description {
+  font-size: 18px; 
+}
+
+#all_content {
+  width:100%; 
+  margin: 0;
+  position: absolute;
+  top: 40%;
+  left: 50%;
+  -ms-transform: translate(-50%, -50%);
+  transform: translate(-50%, -50%);
 }
 
 .comment-bar {
   padding: 10px;
+  padding-top:50px; 
 }
 
 div {
@@ -65,4 +114,21 @@ div .song_display {
   padding: 30px;
   background: rgba(0,0,0,0.1);
   box-shadow: 5px 5px 3px #888888;
+}
+
+#loading {
+  margin: 0;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  -ms-transform: translate(-50%, -50%);
+  transform: translate(-50%, -50%);
+}
+
+#footer {
+  font-size:12px;
+  position:fixed; 
+  left: 0;
+  bottom: 5;
+  width: 100%;
 }

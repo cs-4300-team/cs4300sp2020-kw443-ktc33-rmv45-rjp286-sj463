@@ -43,28 +43,37 @@ function addInput() {
 function output() {
   // var data = "link=https://open.spotify.com/playlist/5hOxxrUnRYpf6XVScyjF0Y&link=https://open.spotify.com/playlist/48KXkzzA9xkonptFgWx1a9"
   let data = (Object.keys(this.inputSet)).map(link => `link=${link}`).join('&')
-  data += "&get_playlist=false";
-  this.stuckPopup = false;
+  if (!data) {
+    this.error_message = 'Please add some playlists first.'
+  }
+  else {
+    data += "&get_playlist=false";
+    this.stuckPopup = false;
+    this.display_lyric = this.lyrics[Math.floor(Math.random() * (this.lyrics.length))]
+    this.loading = true;
 
-  /* Using modern fetch api which provides a promise:
-  https://developer.mozilla.org/en-US/docs/Web/API/Fetch_API/Using_Fetch */
-  fetch('/', {
-    method: 'POST',
-    headers: {
-      "Content-Type": "application/x-www-form-urlencoded"
-    },
-    body: data
-  })
-    .then(res => res.json())
-    .then(songs => {
-      this.outputs = songs;
-      this.error_message = '';
+    /* Using modern fetch api which provides a promise:
+    https://developer.mozilla.org/en-US/docs/Web/API/Fetch_API/Using_Fetch */
+    fetch('/', {
+      method: 'POST',
+      headers: {
+        "Content-Type": "application/x-www-form-urlencoded"
+      },
+      body: data
     })
-    .catch(e => {
-      console.log("ERROR");
-      this.error_message = 'Sorry, there appears to be a problem.';
-      // error handle here!
-    })
+      .then(res => res.json())
+      .then(songs => {
+        this.outputs = songs;
+        this.error_message = '';
+        this.loading = false;
+      })
+      .catch(e => {
+        console.log("ERROR");
+        this.error_message = 'Sorry, there appears to be a problem.';
+        this.loading = false;
+        // error handle here!
+      })
+  }
 }
 
 const examplesString = `37i9dQZF1DX9s3cYAeKW5d=Hip-Hop%20Workout%20Mix&%3E%3E%3E37i9dQZF1DX48TTZL62Yht=Hip-Hop%20Favourites&%3E%3E%3E28ONiLZsrlTPUYxmC7ZJ0f=Hip-Hop%20Hits&%3E%3E%3E37i9dQZF1DX8WMG8VPSOJC=Country%20Kind%20of%20Love&>>>37i9dQZF1DWTwnEm1IYyoj=Soft%20Pop%20Hits&>>>37i9dQZF1DWXRqgorJj26U=Rock%20Classics`
@@ -78,9 +87,18 @@ const app = new Vue({
     examples: decodeURIComponent(examplesString)
       .split('&>>>')
       .map(i => i.split(/=(.+)/))
-      .map(([id, name]) => ({id, name})),
+      .map(([id, name]) => ({ id, name })),
     error_message: '',
-    stuckPopup: false
+    stuckPopup: false,
+    lyrics: [
+      { lyric: "Do you ever feel like a plastic bag / Drifting through the wind / Wanting to start again?", artist: 'Katy Perry' },
+      { lyric: "But it's just the price I pay / Destiny is calling me / Open up my eager eyes / 'Cause I'm Mr. Brightside.", artist: 'The Killers' },
+      { lyric: "Some will win, some will lose / Some were born to sing the blues / Oh, the movie never ends / It goes on and on, and on, and on.", artist: 'Journey' },
+      { lyric: "Hey now, you're an all-star, get your game on, go play / Hey now, you're a rock star, get the show on, get paid.", artist: 'Smash Mouth' },
+      { lyric: "She say, \"Do you love me?\" I tell her, \"Only partly\" / I only love my bed and my momma, I'm sorry.", artist: 'Drake' }
+    ],
+    display_lyric: null,
+    loading: false
   },
   methods: {
     addInput,
@@ -92,7 +110,7 @@ const app = new Vue({
     },
     output,
     image(song) {
-      if(!song || !song.images || song.images.length === 0) {
+      if (!song || !song.images || song.images.length === 0) {
         return 'static/not_found.png'
       }
       // use spread here to avoid mutating song
@@ -121,12 +139,12 @@ const app = new Vue({
   },
   mounted() {
     const hash = decodeURIComponent(window.location.hash);
-    if(!hash || hash.length == 0) {
+    if (!hash || hash.length == 0) {
       return;
     }
     try {
       const inputs = hash.substring(1).split('&>>>').map(i => i.split(/=(.+)/))
-      for(let [url, name] of inputs) {
+      for (let [url, name] of inputs) {
         this.inputSet['https://open.spotify.com/playlist/' + url] = decodeURIComponent(name)
       }
       this.$forceUpdate();
