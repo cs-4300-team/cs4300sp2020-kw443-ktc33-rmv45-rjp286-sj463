@@ -2,7 +2,9 @@
 <!-- source used for setup help -->
 
 <head>
+  <meta charset="UTF-8">
   <link rel="stylesheet" href="/static/index-main.css">
+  <link href="/static/css/all.css" rel="stylesheet">
   <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
   <!-- <script src="https://cdn.jsdelivr.net/npm/vue@2.6.11"></script> -->
   <title>Party Playlist!</title>
@@ -12,42 +14,48 @@
 
 <body>
   <div id="app">
-    <div v-if="!loading" id="all_content">
-      <h1>party playlist mixer</h1>
-      <span id="description">add links to Spotify playlists (one-by-one) below then click Go! to get a new
-        playlist</span>
-      <div class="comment-bar">
-        <!-- <textarea cols="100">Enter input here.</textarea> -->
-        <input id="input_text" type="text" v-bind:size="stuckPopup ? 50 : 75" placeholder="Add Your Playlists."
-          v-model="input">
-        <button type="button" v-on:click="addInput">+</button>
-        <span id="stuck" v-on:click="stuckPopup = !stuckPopup">Stuck?</span>
+    <div v-if="!loading" id="container">
+      <!-- First Flex Box -->
+      <div>
+        <h1>party playlist mixer</h1>
+        <span id="description">add links to Spotify playlists (one-by-one) below then click Go! to get a new
+          playlist</span>
+        <div class="comment-bar">
+          <!-- <textarea cols="100">Enter input here.</textarea> -->
+          <input id="input_text" type="text" v-bind:size="stuckPopup ? 50 : 75" placeholder="Add Your Playlists."
+            v-model="input">
+          <button type="button" v-on:click="addInput" class="btn add_btn"><i class="fas fa-plus"></i></button>
+          <span id="stuck" v-on:click="stuckPopup = !stuckPopup">Stuck?</span>
 
-        <div id="stuck_popup" v-if="stuckPopup">
-          <div id="stuck_popup_contents">
-            Try these example playlists!
-            <ul>
-              <li v-for="example in examples" v-on:click="setExample(example)" class="example_input">
-                {{example.name}}
-              </li>
-            </ul>
+          <div id="stuck_popup" v-if="stuckPopup">
+            <div id="stuck_popup_contents">
+              Try these example playlists!
+              <ul>
+                <li v-for="example in examples" v-on:click="setExample(example)" class="example_input">
+                  {{example.name}}
+                </li>
+              </ul>
+            </div>
           </div>
         </div>
+
+        <span id="error_label" v-if="error_message">{{ error_message }}<br></span>
+
+        <span v-if="Object.keys(inputSet).length > 0">Your Playlists: </span>
+        <div style="max-width:75%" id="playlist_container">
+          <div v-for="(val, input_key) in inputSet" :key=input_key>
+            <span>{{ val }}
+              <button id="`+ new_input + `" v-on:click="removeRow(input_key)" class="btn del_btn"><i
+                  class="fas fa-times"></i></button>
+            </span>
+          </div>
+        </div><br>
+        <button type="button" class="btn go_btn" v-on:click="output">Go!</button><br>
       </div>
 
-      <span id="error_label" v-if="error_message">{{ error_message }}<br></span>
-
-      <span v-if="inputSet.size > 0">Your Playlists: </span>
-      <div class="row" v-for="(val, input_key) in inputSet" :key=input_key>
-        <span>{{ val }}</span>
-        <button id="`+ new_input + `" v-on:click="removeRow(input_key)">X</button>
-      </div> <br>
-
-      <button type="button" style="background-color: green;color: white;" v-on:click="output">Go!</button><br>
-
-      <label v-if="outputs.length">Outputs:</label>
-      <div style="overflow:auto; max-height:300px; width:50%">
-        <!-- <pre>{{stringOutput}}</pre> -->
+      <!-- Second Flex Box -->
+      <div id="output_container">
+        <label v-if="outputs.length">Outputs:</label>
         <div class="song_display" v-for="item in outputs" v-if="item && item.name">
           <img v-bind:src="image(item)" />
           <div class="song_info">
@@ -57,11 +65,13 @@
         </div>
       </div>
     </div>
+
     <div id="loading" v-if="loading">
       {{ display_lyric.lyric }} <br>
       -- {{ display_lyric.artist }} <br>
       <img src="/static/music.gif" width="20%" height="auto">
     </div>
+
     <div id="footer">
       Created by: Katelin Chan (ktc33), Salil Jajodia (sj463), Ryan Pappa (rjp286), Ryan Vaccariello (rmv45), Keely Wan
       (kw443)
