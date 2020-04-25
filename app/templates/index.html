@@ -67,7 +67,7 @@
       <!-- Second Flex Box -->
       <div id="output_container" v-if="!show_home" v-cloak>
         <label v-if="outputs.length">Outputs:</label>
-        <div style="overflow:auto; max-height:95%">
+        <div style="overflow:auto; max-height:95%" v-cloak>
           <div class="song_display" v-for="item in outputs" v-if="item && item.name"
             v-on:click="show_modal=true;cur_item=item">
             <img v-bind:src="image(item)" />
@@ -85,15 +85,16 @@
       -- {{ display_lyric.artist }} <br>
       <img src="/static/img/music.gif" width="20%" height="auto">
     </div>
+
     <!-- Modal Popup for displaying song information -->
     <transition name="fade">
-      <div class="modal" id="modal" v-if="show_modal">
-        <div class="modal-body">
-          <div class="modal-content" id="modal-content">
-            <div v-on:click="show_modal=false" class="close_btn"> <i class="fas fa-times"></i></div>
-            <div class="modal-header">Heading</div>
-            <div class="modal-desc">
-              <div style="text-align:left;max-height:100%;overflow:auto">
+      <div class="modal" id="modal" v-if="show_modal" v-cloak>
+        <div class="modal-body" v-cloak>
+          <div class="modal-content" id="modal-content" v-cloak>
+            <div v-on:click="show_modal=false" class="close_btn" v-cloak> <i class="fas fa-times"></i></div>
+            <div class="modal-header" v-cloak>Heading</div>
+            <div class="modal-desc" v-cloak>
+              <div style="text-align:left;max-height:100%;overflow:auto" v-cloak>
                 {{ cur_item }}
 
               </div>
