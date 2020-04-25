@@ -68,7 +68,8 @@
       <div id="output_container" v-if="!show_home" v-cloak>
         <label v-if="outputs.length">Outputs:</label>
         <div style="overflow:auto; max-height:95%">
-          <div class="song_display" v-for="item in outputs" v-if="item && item.name">
+          <div class="song_display" v-for="item in outputs" v-if="item && item.name"
+            v-on:click="show_modal=true;cur_item=item">
             <img v-bind:src="image(item)" />
             <div class="song_info">
               <span>{{ item.name }}</span><br />
@@ -85,22 +86,22 @@
       <img src="/static/img/music.gif" width="20%" height="auto">
     </div>
     <!-- Modal Popup for displaying song information -->
-    <!-- <transition name="fade">
-      <div class="modal" id="modal">
+    <transition name="fade">
+      <div class="modal" id="modal" v-if="show_modal">
         <div class="modal-body">
           <div class="modal-content" id="modal-content">
-            <div v-on:click="show_about=false" class="close_btn"> <i class="fas fa-times"></i></div>
+            <div v-on:click="show_modal=false" class="close_btn"> <i class="fas fa-times"></i></div>
             <div class="modal-header">Heading</div>
             <div class="modal-desc">
               <div style="text-align:left;max-height:100%;overflow:auto">
-
+                {{ cur_item }}
 
               </div>
             </div>
           </div>
         </div>
       </div>
-    </transition> -->
+    </transition>
 
     <div id="footer">
       Created by: Katelin Chan (ktc33), Salil Jajodia (sj463), Ryan Pappa (rjp286), Ryan Vaccariello (rmv45), Keely Wan

@@ -105,7 +105,8 @@ const app = new Vue({
     display_lyric: null,
     loading: false,
     show_home: true,
-    show_about: false
+    show_modal: false,
+    cur_item: null
   },
   methods: {
     addInput,
