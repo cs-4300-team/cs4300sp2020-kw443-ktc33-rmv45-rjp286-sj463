@@ -51,6 +51,7 @@ function output() {
     this.stuckPopup = false;
     this.display_lyric = this.lyrics[Math.floor(Math.random() * (this.lyrics.length))]
     this.loading = true;
+    this.show_home = false;
 
     /* Using modern fetch api which provides a promise:
     https://developer.mozilla.org/en-US/docs/Web/API/Fetch_API/Using_Fetch */
@@ -98,7 +99,9 @@ const app = new Vue({
       { lyric: "She say, \"Do you love me?\" I tell her, \"Only partly\" / I only love my bed and my momma, I'm sorry.", artist: 'Drake' }
     ],
     display_lyric: null,
-    loading: false
+    loading: false,
+    show_home: true,
+    show_about: false
   },
   methods: {
     addInput,

@@ -48,3 +48,6 @@ def search():
 def favicon(): 
 	return send_from_directory('static/img', 'music.ico')
 
+@irsystem.route('/about')
+def about():
+	return send_from_directory('templates', 'about.html')
