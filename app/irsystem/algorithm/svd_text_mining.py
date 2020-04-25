@@ -1,21 +1,40 @@
+import numpy as np
+
+from flask import jsonify
+
+from app.database import database
+from app.spotify import spotify
+
+def get_comments(): 
+    songs = database.find_reddit_songs()
+    reddit_obj = []
+    for song in songs: 
+        song_id = song["id"]
+        reddit_comments = ""
+        for comment in song["comments"]:
+            reddit_comments += comment["text"]
+        reddit_obj.append({"song_id": song_id, "comment": reddit_comments})
+    return jsonify(reddit_obj)
+
+redditcomments = get_comments()
+
 
 from __future__ import print_function
 import numpy as np
 import json
-with open("kickstarter.jsonlist") as f:
-    documents = [(x['name'], x['category'], x['text'])
-                 for x in json.loads(f.readlines()[0])
-                 if len(x['text'].split()) > 50]
+with open("redditcomments") as f:
+    documents = [(x['songid'], x['comment'])
+                 for x in f)]
     
 #To prove I'm not cheating with the magic trick...
 np.random.shuffle(documents)
 
 vectorizer = TfidfVectorizer(stop_words = 'english', max_df = .7,
-                            min_df = 75)
+                            min_df = 1)
 my_matrix = vectorizer.fit_transform([x[2] for x in documents]).transpose()
 vectorizer = TfidfVectorizer(stop_words = 'english', max_df = .7,
-                            min_df = 75)
-my_matrix = vectorizer.fit_transform([x[2] for x in documents]).transpose()
+                            min_df = 1)
+my_matrix = vectorizer.fit_transform([x[1] for x in documents]).transpose()
 print(type(my_matrix))
 print(my_matrix.shape)
 from scipy.sparse.linalg import svds
@@ -47,13 +66,13 @@ print(words_compressed.shape)
 from sklearn.preprocessing import normalize
 words_compressed = normalize(words_compressed, axis = 1)
 
+"""
 def closest_words(word_in, k = 10):
     if word_in not in word_to_index: return "Not in vocab."
     sims = words_compressed.dot(words_compressed[word_to_index[word_in],:])
     asort = np.argsort(-sims)[:k+1]
     return [(index_to_word[i],sims[i]/sims[asort[0]]) for i in asort[1:]]
-
-closest_words("nuclear")
+"""
 print(word_to_index.keys()[:200])
 from sklearn.manifold import TSNE
 tsne = TSNE(verbose=1)
@@ -64,7 +83,7 @@ projected_docs = tsne.fit_transform(subset)
 print(projected_docs.shape)
 
 docs_compressed = normalize(docs_compressed, axis = 1)
-def closest_projects(project_index_in, k = 5):
+def closest_songs(project_index_in, k = 10):
     sims = docs_compressed.dot(docs_compressed[project_index_in,:])
     asort = np.argsort(-sims)[:k+1]
     return [(documents[i][0],sims[i]/sims[asort[0]]) for i in asort[1:]]
@@ -74,3 +93,22 @@ for i in range(10):
     for title, score in closest_projects(i):
         print("{}:{:.3f}".format(title[:40], score))
     print()
+
+def weightings_list_input_songs(input_song_indexes):
+    output = []
+    for song_index in input_song_ids:
+        closest_songs = closet_songs(song_index)
+        output.append(closest_songs)
+    return (output)
+
+def compile_weightings_in_dictionary(weightings_list):
+    dic = {}
+    for ranking_list in weightings_list:
+        for ranking_tuple in ranking_list:
+            songid = ranking_tuple[0]
+            if songid not in dic:
+                dic(songid) = ranking_tuple[1]
+            else:
+                dic(songid) += ranking_tuple[1]
+
+
