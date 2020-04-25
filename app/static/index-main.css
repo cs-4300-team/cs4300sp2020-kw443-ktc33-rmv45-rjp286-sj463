@@ -298,7 +298,7 @@ div .song_display {
   overflow:auto; 
   margin: 0 15px; 
   display:flex; 
-  flex-direction:column; 
+  flex-direction:row; 
   justify-content:center; 
 }
 .fade-enter-active, .fade-leave-active {
@@ -316,4 +316,8 @@ div .song_display {
 .close_btn:hover {
   color:#949996; 
   cursor:pointer; 
+}
+
+#songpic {
+  width: 150px;
 }
