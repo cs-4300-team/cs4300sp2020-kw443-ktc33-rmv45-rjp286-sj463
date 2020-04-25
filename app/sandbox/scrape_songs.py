@@ -59,9 +59,9 @@ def update_song_playlist(song_id, playlist_id):
 # update_songs()
 
 # We have 30,615 playlists in total
-# So far we have 1-1000 done
-start = 630
-stop = 1000
+# So far we have 1-2000, 10000-17500, 20000-25000, 27000-30000 done
+start = 17500
+stop = 20000
 failed = []
 
 while start <= stop:
@@ -84,14 +84,13 @@ while start <= stop:
             else:
                 update_song_playlist(song_id, playlist["id"])
         if (start%10==0): print(start)
-        start += 1
     except KeyboardInterrupt:
         break
     except:
         songs.clear()
         failed.append(start)
         print("Failed playlists: " + str(failed))
-        start += 1
+    start += 1
 update_songs()
 
 print("Failed playlists: " + str(failed))
