@@ -15,10 +15,18 @@
 <body>
   <div id="app">
     <div v-if="!loading" id="container">
-      <button id="home" type="button" v-on:click="clickHome"><i class="fas fa-home"
-          style="padding-right:5px"></i>home</button>
+      <!-- <div id="home" v-on:click="show_home=true"><i class="fas fa-home" style="padding-right:5px"></i>home</div> -->
+      <div class="nav stroke">
+        <ul>
+          <li><span><a href="/" id="main"><i class="fab fa-spotify" style="padding-right:8px"></i>party playlist
+                mixer</a></span></li>
+          <li><span><a href="/">home</a></span></li>
+          <li><span><a href="/about">about</a></span></li>
+        </ul>
+      </div>
+
       <!-- First Flex Box -->
-      <div>
+      <div v-if="show_home">
         <img src="/static/img/icon.png" height="auto" width="125px">
         <h1>party playlist mixer</h1>
         <span id="description">add links to Spotify playlists (one-by-one) below then click Go! to get a new
@@ -28,10 +36,10 @@
           <input id="input_text" type="text" v-bind:size="stuckPopup ? 50 : 75" placeholder="Add Your Playlists."
             v-model="input">
           <button type="button" v-on:click="addInput" class="btn add_btn"><i class="fas fa-plus"></i></button>
-          <span id="stuck" v-on:click="stuckPopup = !stuckPopup">Stuck?</span>
+          <span id="stuck" v-on:click="stuckPopup = !stuckPopup" v-cloak>Stuck?</span>
 
-          <div id="stuck_popup" v-if="stuckPopup">
-            <div id="stuck_popup_contents">
+          <div id="stuck_popup" v-if="stuckPopup" v-cloak>
+            <div id="stuck_popup_contents" v-cloak>
               Try these example playlists!
               <ul>
                 <li v-for="example in examples" v-on:click="setExample(example)" class="example_input">
@@ -42,11 +50,11 @@
           </div>
         </div>
 
-        <span id="error_label" v-if="error_message">{{ error_message }}<br></span>
+        <span id="error_label" v-if="error_message" v-cloak>{{ error_message }}<br></span>
 
-        <span v-if="Object.keys(inputSet).length > 0">Your Playlists: </span>
-        <div style="max-width:75%" id="playlist_container">
-          <div v-for="(val, input_key) in inputSet" :key=input_key>
+        <span v-if="Object.keys(inputSet).length > 0" v-cloak>Your Playlists: </span>
+        <div style="max-width:75%" id="playlist_container" v-cloak>
+          <div v-for="(val, input_key) in inputSet" :key=input_key v-cloak>
             <span>{{ val }}
               <button id="`+ new_input + `" v-on:click="removeRow(input_key)" class="btn del_btn"><i
                   class="fas fa-times"></i></button>
@@ -57,23 +65,44 @@
       </div>
 
       <!-- Second Flex Box -->
-      <div id="output_container">
+      <div id="output_container" v-if="!show_home" v-cloak>
         <label v-if="outputs.length">Outputs:</label>
-        <div class="song_display" v-for="item in outputs" v-if="item && item.name">
-          <img v-bind:src="image(item)" />
-          <div class="song_info">
-            <span>{{ item.name }}</span><br />
-            <span class="song_artists">{{ item.artists && item.artists.join(', ') || 'Unknown Artist'}} </span>
+        <div style="overflow:auto; max-height:95%" v-cloak>
+          <div class="song_display" v-for="item in outputs" v-if="item && item.name"
+            v-on:click="show_modal=true;cur_item=item">
+            <img v-bind:src="image(item)" />
+            <div class="song_info">
+              <span>{{ item.name }}</span><br />
+              <span class="song_artists">{{ item.artists && item.artists.join(', ') || 'Unknown Artist'}} </span>
+            </div>
           </div>
         </div>
       </div>
     </div>
 
-    <div id="loading" v-if="loading">
+    <div id="loading" v-if="loading" v-cloak>
       {{ display_lyric.lyric }} <br>
       -- {{ display_lyric.artist }} <br>
       <img src="/static/img/music.gif" width="20%" height="auto">
     </div>
+
+    <!-- Modal Popup for displaying song information -->
+    <transition name="fade">
+      <div class="modal" id="modal" v-if="show_modal" v-cloak>
+        <div class="modal-body" v-cloak>
+          <div class="modal-content" id="modal-content" v-cloak>
+            <div v-on:click="show_modal=false" class="close_btn" v-cloak> <i class="fas fa-times"></i></div>
+            <div class="modal-header" v-cloak>Heading</div>
+            <div class="modal-desc" v-cloak>
+              <div style="text-align:left;max-height:100%;overflow:auto" v-cloak>
+                {{ cur_item }}
+
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </transition>
 
     <div id="footer">
       Created by: Katelin Chan (ktc33), Salil Jajodia (sj463), Ryan Pappa (rjp286), Ryan Vaccariello (rmv45), Keely Wan
