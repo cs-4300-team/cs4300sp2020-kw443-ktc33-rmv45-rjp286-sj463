@@ -1,5 +1,7 @@
+from __future__ import print_function
 import numpy as np
-
+import numpy as np
+import json
 from flask import jsonify
 
 from app.database import database
@@ -17,14 +19,12 @@ def get_comments():
     return jsonify(reddit_obj)
 
 redditcomments = get_comments()
+print (redditcomments)
 
 
-from __future__ import print_function
-import numpy as np
-import json
-with open("redditcomments") as f:
-    documents = [(x['songid'], x['comment'])
-                 for x in f)]
+
+documents = [(x['song_id'], x['comment'])
+                 for x in redditcomments]
     
 #To prove I'm not cheating with the magic trick...
 np.random.shuffle(documents)
@@ -47,7 +47,6 @@ print(v_trans.shape)
 import matplotlib
 import numpy as np
 import matplotlib.pyplot as plt
-%matplotlib inline
 plt.plot(s[::-1])
 plt.xlabel("Singular value number")
 plt.ylabel("Singular value")
@@ -94,6 +93,7 @@ for i in range(10):
         print("{}:{:.3f}".format(title[:40], score))
     print()
 
+"""
 def weightings_list_input_songs(input_song_indexes):
     output = []
     for song_index in input_song_ids:
@@ -111,4 +111,4 @@ def compile_weightings_in_dictionary(weightings_list):
             else:
                 dic(songid) += ranking_tuple[1]
 
-
+"""
