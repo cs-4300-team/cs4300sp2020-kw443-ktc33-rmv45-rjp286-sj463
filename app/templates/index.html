@@ -15,7 +15,8 @@
 <body>
   <div id="app">
     <div v-if="!loading" id="container">
-      <div id="home"><i class="fas fa-home" style="padding-right:5px"></i>home</div>
+      <button id="home" type="button" v-on:click="clickHome"><i class="fas fa-home"
+          style="padding-right:5px"></i>home</button>
       <!-- First Flex Box -->
       <div>
         <img src="/static/img/icon.png" height="auto" width="125px">
