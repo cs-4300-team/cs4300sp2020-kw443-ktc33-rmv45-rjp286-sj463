@@ -77,6 +77,10 @@ function output() {
   }
 }
 
+function clickHome() {
+  console.log("Home");
+}
+
 const examplesString = `37i9dQZF1DX9s3cYAeKW5d=Hip-Hop%20Workout%20Mix&%3E%3E%3E37i9dQZF1DX48TTZL62Yht=Hip-Hop%20Favourites&%3E%3E%3E28ONiLZsrlTPUYxmC7ZJ0f=Hip-Hop%20Hits&%3E%3E%3E37i9dQZF1DX8WMG8VPSOJC=Country%20Kind%20of%20Love&>>>37i9dQZF1DWTwnEm1IYyoj=Soft%20Pop%20Hits&>>>37i9dQZF1DWXRqgorJj26U=Rock%20Classics`
 
 const app = new Vue({
@@ -112,6 +116,7 @@ const app = new Vue({
       this.updateHash();
     },
     output,
+    clickHome,
     image(song) {
       if (!song || !song.images || song.images.length === 0) {
         return 'static/not_found.png'
@@ -132,7 +137,8 @@ const app = new Vue({
       window.location.hash = `#${newHash}`
     },
     setExample(example) {
-      this.input = 'https://open.spotify.com/playlist/' + example.id
+      this.input = 'https://open.spotify.com/playlist/' + example.id;
+      this.addInput();
     }
   },
   computed: {
