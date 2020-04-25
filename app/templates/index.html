@@ -4,7 +4,7 @@
 <head>
   <meta charset="UTF-8">
   <link rel="stylesheet" href="/static/index-main.css">
-  <link href="/static/css/all.css" rel="stylesheet">
+  <link href="/static/fontawesome/css/all.css" rel="stylesheet">
   <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
   <!-- <script src="https://cdn.jsdelivr.net/npm/vue@2.6.11"></script> -->
   <title>Party Playlist!</title>
@@ -15,8 +15,10 @@
 <body>
   <div id="app">
     <div v-if="!loading" id="container">
+      <div id="home"><i class="fas fa-home" style="padding-right:5px"></i>home</div>
       <!-- First Flex Box -->
       <div>
+        <img src="/static/img/icon.png" height="auto" width="125px">
         <h1>party playlist mixer</h1>
         <span id="description">add links to Spotify playlists (one-by-one) below then click Go! to get a new
           playlist</span>
@@ -69,7 +71,7 @@
     <div id="loading" v-if="loading">
       {{ display_lyric.lyric }} <br>
       -- {{ display_lyric.artist }} <br>
-      <img src="/static/music.gif" width="20%" height="auto">
+      <img src="/static/img/music.gif" width="20%" height="auto">
     </div>
 
     <div id="footer">

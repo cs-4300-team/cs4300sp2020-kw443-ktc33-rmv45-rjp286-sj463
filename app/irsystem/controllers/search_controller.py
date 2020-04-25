@@ -44,5 +44,7 @@ def search():
 				return error
 		# test case: curl http://localhost:5000 -d "link=https://open.spotify.com/playlist/5hOxxrUnRYpf6XVScyjF0Y" -d "link=https://open.spotify.com/playlist/48KXkzzA9xkonptFgWx1a9" -X POST -v
 
-
+@irsystem.route('/favicon.ico')
+def favicon(): 
+	return send_from_directory('static/img', 'music.ico')
 

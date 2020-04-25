@@ -46,6 +46,7 @@ h1{
   color:white; 
   font-family: Lineto-Med;
   margin:0; 
+  margin-top:-20px; 
 }
 #description {
   font-size: 18px; 
@@ -82,17 +83,13 @@ div {
 }
 
 .add_btn {
-  /* background-color: #6c757d; */
-  /* border-color: #6c757d; */
   background-color:#b1b5b2; 
   border-color:#b1b5b2; 
 }
 
 .add_btn:hover {
-  /* background-color:#5a6268; */
   background-color:#949996;
   border-color:#7f8280;
-  /* border-color:#545b62; */
 }
 
 .del_btn {
@@ -197,4 +194,14 @@ div .song_display {
   left: 0;
   bottom: 5;
   width: 100%;
+}
+
+#home {
+  position: absolute; 
+  top:5px; 
+  left: 5px; 
+}
+
+#home:hover {
+  cursor:pointer; 
 }
