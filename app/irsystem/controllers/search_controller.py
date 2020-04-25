@@ -7,6 +7,7 @@ from flask import send_from_directory
 
 from app.spotify import spotify
 from app.irsystem.algorithm import basic_merge
+from app.irsystem.algorithm import basic_merge_copy
 
 parser = reqparse.RequestParser()
 parser.add_argument('link', action='append')
@@ -32,7 +33,7 @@ def search():
 					
 		if args['get_playlist'] == "false": 
 			try:
-				return jsonify(basic_merge.merge_playlists(args['link']))
+				return jsonify(basic_merge_copy.merge_playlists(args['link']))
 			except Exception as error:
 				print(error)
 				return error
