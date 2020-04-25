@@ -7,6 +7,7 @@ from flask import send_from_directory
 
 from app.spotify import spotify
 from app.irsystem.algorithm import basic_merge
+from app.irsystem.algorithm import svd_text_mining
 
 parser = reqparse.RequestParser()
 parser.add_argument('link', action='append')
@@ -51,3 +52,7 @@ def favicon():
 @irsystem.route('/about')
 def about():
 	return send_from_directory('templates', 'about.html')
+
+@irsystem.route('/test')
+def test_case():
+	return svd_text_mining.svd()
