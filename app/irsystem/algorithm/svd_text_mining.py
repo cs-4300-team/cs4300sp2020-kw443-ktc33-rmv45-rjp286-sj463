@@ -10,10 +10,15 @@ from scipy.sparse.linalg import svds
 
 from app.database import database
 from app.spotify import spotify
+from collections import defaultdict
+
+db_songs = {}
 
 def get_comments(): 
     songs = database.find_reddit_songs()
+    print("got songs from db")
     reddit_obj = []
+    """
     for song in songs: 
         song_id = song["id"]
         reddit_comments = ""
@@ -21,18 +26,27 @@ def get_comments():
             reddit_comments += comment["text"]
         reddit_obj.append({"song_id": song_id, "comment": reddit_comments})
     """
-    for i in range(100): 
+    for i in range(0, 1000): 
         song_id = songs[i]["id"]
-        reddit_comments = ""
-        for comment in songs[i]["comments"]:
-            reddit_comments += comment["text"]
+        if song_id not in db_songs:
+            db_songs[song_id] = {
+                "name": songs[i]["name"],
+                "artists": list(map(lambda a: a["name"], songs[i]["artists"])),
+                "images": songs[i]["album"]["images"],
+                "id": songs[i]["id"]
+            }
+        reddit_comments = " ".join(list(map(lambda c: c["text"], songs[i]["comments"])))
+        # for comment in songs[i]["comments"]:
+        #     reddit_comments += comment["text"]
         reddit_obj.append({"song_id": song_id, "comment": reddit_comments})
-    """
+        print(i)
     return reddit_obj
 
 
-def svd(): 
+def svd():
+    print("running svd")
     redditcomments = get_comments()
+    print("got comments")
     documents = [(x['song_id'], x['comment']) for x in redditcomments]
     vectorizer = TfidfVectorizer(stop_words = 'english', max_df = .7, min_df = 1)
     my_matrix = vectorizer.fit_transform([x[1] for x in documents]).transpose()
@@ -58,12 +72,14 @@ def svd():
     index_to_word = {i:t for t,i in word_to_index.items()}
     print(words_compressed.shape)
     print(list(word_to_index.keys())[:200])
-    from sklearn.manifold import TSNE
-    tsne = TSNE(verbose=1)
+    # from sklearn.manifold import TSNE
+    from MulticoreTSNE import MulticoreTSNE as TSNE
+    print("Running TSNE")
+    #tsne = TSNE()
     print(docs_compressed.shape)
     #we'll just take the first 5K documents, because TSNE is memory intensive!
     subset = docs_compressed[:5000,:]
-    projected_docs = tsne.fit_transform(subset)
+    projected_docs = TSNE(n_jobs=8).fit_transform(subset)
     print(projected_docs.shape)
 
     docs_compressed = normalize(docs_compressed, axis = 1)
@@ -72,13 +88,16 @@ def svd():
         sims = docs_compressed.dot(docs_compressed[project_index_in,:])
         asort = np.argsort(-sims)[:k+1]
         return [(documents[i][0],sims[i]/sims[asort[0]]) for i in asort[1:]]
-        
-    for i in range(50):
-        print(documents[i][0])
+    
+    scores = defaultdict(int)
+    for i in range(0, 1000):
+        # song = documents[i][0]
         for title, score in closest_projects(i):
-            print("{}:{:.3f}".format(title[:40], score))
-    print()
-
+            scores[title] += score
+            # print("{}:{:.3f}".format(title[:40], score))
+    top = sorted(scores.keys(), key=lambda k: scores[k], reverse=True)[0:10]
+    top_named = list(map(lambda k: db_songs[k], top))
+    print(top_named)
 
 
     """
