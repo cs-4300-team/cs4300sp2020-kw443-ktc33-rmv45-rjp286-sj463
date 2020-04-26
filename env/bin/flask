@@ -1,0 +1,12 @@
+#!/bin/sh
+'''exec' "/Users/saliljajodia/Desktop/Academics/Spring 2020/CS 4300/Spotify Playlist Creator/cs4300sp2020-kw443-ktc33-rmv45-rjp286-sj463/env/bin/python3" "$0" "$@"
+' '''
+# -*- coding: utf-8 -*-
+import re
+import sys
+
+from flask.cli import main
+
+if __name__ == '__main__':
+    sys.argv[0] = re.sub(r'(-script\.pyw?|\.exe)?$', '', sys.argv[0])
+    sys.exit(main())
