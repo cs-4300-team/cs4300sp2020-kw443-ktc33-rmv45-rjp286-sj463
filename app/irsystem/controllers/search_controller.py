@@ -81,13 +81,16 @@ def about():
 
 @irsystem.route('/admin')
 def admin():
-	code = sp_oauth.parse_response_code(request.url)
-	if code:
-		token_info = sp_oauth.get_access_token(code)
-		access_token = token_info['access_token']
-		sp = spotipy.Spotify(access_token)
-		spotify.try_login_cached()
-		return render_template("admin.html", good="Authorized", authorize=sp_oauth.get_authorize_url())
+	try:
+		code = sp_oauth.parse_response_code(request.url)
+		if code:
+			token_info = sp_oauth.get_access_token(code)
+			access_token = token_info['access_token']
+			sp = spotipy.Spotify(access_token)
+			spotify.try_login_cached()
+			return render_template("admin.html", good="Authorized", authorize=sp_oauth.get_authorize_url())
+	except:
+		print("No code found")
 	return render_template("admin.html", authorize=sp_oauth.get_authorize_url())
 
 @irsystem.route('/test')
