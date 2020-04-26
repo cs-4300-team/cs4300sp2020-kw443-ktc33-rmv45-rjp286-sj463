@@ -23,3 +23,5 @@ sample.bson
 .env
 env.bat
 env/**
+# mac artifact
+**DS_Store
