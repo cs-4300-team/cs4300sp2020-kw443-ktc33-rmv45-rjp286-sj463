@@ -53,7 +53,12 @@ def search():
 				output = basic_merge.merge_playlists(args['link'])
 				ids = list(map(lambda s: s["id"], output))
 				created = spotify.create_playlist(ids)
-				return jsonify(output)
+				to_send = {
+					"output": output
+				}
+				if created:
+					to_send["created"] = created
+				return jsonify(to_send)
 			except Exception as error:
 				print(error)
 				return error
@@ -83,7 +88,7 @@ def admin():
 		spotify.try_login_cached()
 		return render_template("admin.html", good="Authorized", authorize=sp_oauth.get_authorize_url())
 	return render_template("admin.html", authorize=sp_oauth.get_authorize_url())
-	
+
 @irsystem.route('/test')
 def test_case():
 	return svd_text_mining.svd()

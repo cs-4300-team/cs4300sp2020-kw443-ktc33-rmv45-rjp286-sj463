@@ -374,3 +374,22 @@ div .song_display:hover {
 .scroller::-webkit-scrollbar-thumb:hover {
   background-color:rgba(60,60,60,0.8);
 }
+
+#created_playlist {
+  padding: 20px;
+}
+
+#created_playlist > a {
+  color:white;
+  animation: glow 2s ease-in-out infinite alternate;
+}
+
+
+@keyframes glow {
+  from {
+    text-shadow: 0 0 3px white;
+  }
+  to {
+    text-shadow: 0 0 20px #fafafa, 0 0 5px #bbf;
+  }
+}
