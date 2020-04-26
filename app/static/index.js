@@ -72,6 +72,7 @@ function output() {
         console.log("ERROR");
         this.error_message = 'Sorry, there appears to be a problem.';
         this.loading = false;
+        this.show_home = true;
         // error handle here!
       })
   }
@@ -124,7 +125,7 @@ const app = new Vue({
       }
       // use spread here to avoid mutating song
       try {
-        const sorted = [...song.images].sort((a, b) => b.height - a.height);
+        const sorted = [...song.images].sort((a, b) => a.height - b.height);
         return sorted[sorted.length - 1].url
       } catch (e) {
         return 'static/not_found.png'

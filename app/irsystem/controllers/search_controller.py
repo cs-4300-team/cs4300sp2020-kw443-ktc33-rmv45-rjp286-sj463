@@ -7,6 +7,7 @@ from flask import send_from_directory
 
 from app.spotify import spotify
 from app.irsystem.algorithm import basic_merge
+from app.irsystem.algorithm import svd_text_mining
 
 import spotipy
 from spotipy import oauth2
@@ -82,3 +83,7 @@ def admin():
 		spotify.try_login_cached()
 		return render_template("admin.html", good="Authorized", authorize=sp_oauth.get_authorize_url())
 	return render_template("admin.html", authorize=sp_oauth.get_authorize_url())
+	
+@irsystem.route('/test')
+def test_case():
+	return svd_text_mining.svd()

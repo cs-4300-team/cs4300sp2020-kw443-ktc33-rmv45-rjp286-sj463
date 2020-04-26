@@ -20,6 +20,10 @@ app/sandbox/output.txt
 sample.bson
 
 # we really shouldn't be pushing environment files
-.env**
+.env
 env.bat
+env/**
+# mac artifact
+**DS_Store
+.env**
 .spotipyauthcache
