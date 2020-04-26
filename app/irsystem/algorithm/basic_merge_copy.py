@@ -143,7 +143,7 @@ def find_merge(track_ids_list, playlist_union, playlist_intersect):
 
     idf = dict()
     for song in song_df:
-        idf[song] = np.log(doc_count/(0.5 + song_df[song] ** 2)) + 1
+        idf[song] = np.log(doc_count/(1 + song_df[song])) + 1
 
     songs_total_co_occur = []
     for i in range(0, len(co_occur)):
