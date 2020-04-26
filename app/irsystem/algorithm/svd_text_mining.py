@@ -32,7 +32,7 @@ def svd():
     my_matrix = vectorizer.fit_transform([x[1] for x in documents]).transpose()
     print(type(my_matrix))
     print(my_matrix.shape)
-    u, s, v_trans = svds(my_matrix, k=100)
+    u, s, v_trans = svds(my_matrix)
     print(u.shape)
     print(s.shape)
     print(v_trans.shape)

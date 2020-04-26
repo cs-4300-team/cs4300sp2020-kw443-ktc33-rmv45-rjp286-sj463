@@ -66,14 +66,14 @@
 
       <!-- Second Flex Box -->
       <div id="output_container" v-if="!show_home" v-cloak>
-        <label v-if="outputs.length">Outputs:</label>
-        <div style="overflow:auto; max-height:95%" v-cloak>
+        <h2 v-if="outputs.length">outputs:</h2>
+        <div class="scroller" style="overflow:auto; max-height:95%" v-cloak>
           <div class="song_display" v-for="item in outputs" v-if="item && item.name"
             v-on:click="show_modal=true;cur_item=item">
-            <img v-bind:src="image(item)" />
+            <img v-bind:src="image(item)" width="50px" height="50px" />
             <div class="song_info">
               <span>{{ item.name }}</span><br />
-              <span class="song_artists">{{ item.artists && item.artists.join(', ') || 'Unknown Artist'}} </span>
+              <span class="song_artists">{{ item.artists && item.artists.join(', ') || 'Unknown Artist'}}</span>
             </div>
           </div>
         </div>
@@ -92,10 +92,14 @@
         <div class="modal-body" v-cloak>
           <div class="modal-content" id="modal-content" v-cloak>
             <div v-on:click="show_modal=false" class="close_btn" v-cloak> <i class="fas fa-times"></i></div>
-            <div class="modal-header" v-cloak>Heading</div>
+            <div class="modal-header" v-cloak>{{cur_item.name}}</div>
             <div class="modal-desc" v-cloak>
-              <div style="text-align:left;max-height:100%;overflow:auto" v-cloak>
-                {{ cur_item }}
+              <div style="text-align:left;max-height:100%;overflow:auto;display:flex" v-cloak>
+                <div style="margin:0"><img id="songpic" v-bind:src="image(cur_item)" height="auto" /></div>
+                <div style="margin:0; flex-grow:1; text-align:left">Artists:
+                  {{ cur_item.artists && cur_item.artists.join(', ') || 'Unknown Artist'}}
+                </div>
+                <!-- {{ cur_item }} -->
               </div>
             </div>
           </div>
