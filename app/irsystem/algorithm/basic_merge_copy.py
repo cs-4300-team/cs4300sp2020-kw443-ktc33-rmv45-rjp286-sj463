@@ -2,6 +2,7 @@ import numpy as np
 
 from app.database import database
 from app.spotify import spotify
+from collections import defaultdict
 
 songs = {}
 
@@ -38,6 +39,8 @@ def merge_playlists(playlists_in):
 def find_merge(playlist_union, playlist_intersect):
 
     songs_union = database.find_songs(list(playlist_union))
+    song_df = defaultdict(int)
+
     playlists_1 = list(map(lambda x: x["playlists"], songs_union))
     # bless up https://stackoverflow.com/questions/952914/how-to-make-a-flat-list-out-of-list-of-lists
     #flatten_playlists = lambda l: [item for sublist in l for item in sublist]
@@ -66,6 +69,8 @@ def find_merge(playlist_union, playlist_intersect):
     co_occur_keys = [k for k in playlist_union]
     song_to_index = {k: co_occur_keys.index(k) for k in co_occur_keys}
     co_occur = np.zeros((len(co_occur_keys), len(co_occur_keys)))
+
+    doc_count = playlists.count()
 
     done = 0
     for playlist in playlists:
@@ -96,7 +101,9 @@ def find_merge(playlist_union, playlist_intersect):
             song_id = track["track"]["id"]
             if not song_id:
                 continue
-            
+            song_df[song_id] += 1
+
+
             # if this song isn't in the union of the playlist inputs,
             # update it in the "similar songs" dict by the cosine similarity
             # todo: account for tf-idf or something
@@ -116,6 +123,10 @@ def find_merge(playlist_union, playlist_intersect):
         if done % 50 == 0:
             print(done)
 
+    idf = dict()
+    for song in song_df:
+        idf[song] = np.log(doc_count/(1 + song_df[song])) + 1
+
     songs_total_co_occur = []
     for i in range(0, len(co_occur)):
         # find the number of co-occurances with other input songs
@@ -127,7 +138,7 @@ def find_merge(playlist_union, playlist_intersect):
     co_occur_top_10 = list(map(lambda total: total[2], sorted(songs_total_co_occur, reverse=True)[0:10]))
 
     # song_count = sorted(songs.keys(), key=lambda k: songs[k]["count"], reverse=True)
-    sim_songs_sort = sorted(sim_songs.keys(), key=lambda k: sim_songs[k], reverse=True)
+    sim_songs_sort = sorted(sim_songs.keys(), key=lambda k: np.log(1 + sim_songs[k]*idf[k]), reverse=True)
 
     top_50 = list(playlist_intersect) + sim_songs_sort[0:50]
 
