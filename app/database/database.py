@@ -47,6 +47,9 @@ def put_song(song):
 def add_song_playlist(id, playlist_id):
     songs.update({"id":id},{"$addToSet":{"playlists":playlist_id}})
 
+def find_reddit_songs(): 
+    return songs.find({"comments":{"$ne":None}})
+
 def find_songs(ids):
     return songs.find({u"id":{"$in":ids}})
 

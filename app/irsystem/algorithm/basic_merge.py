@@ -8,12 +8,14 @@ songs = {}
 def get_id(track):
     if not track or not track["track"] or not track["track"]["id"]:
         return "None"
+    song_id = track["track"]["id"]
     songs[track["track"]["id"]] = {
         "name": track["track"]["name"],
         "artists": list(map(lambda a: a["name"], track["track"]["artists"])),
-        "images": track["track"]["album"]["images"]
+        "images": track["track"]["album"]["images"],
+        "id": song_id
     }
-    return track["track"]["id"]
+    return song_id
 
 def merge_playlists(playlists_in):
     songs.clear()
@@ -89,7 +91,8 @@ def find_merge(playlist_union, playlist_intersect):
                 songs[song_id] = {
                     "name": track["track"]["name"],
                     "artists": list(map(lambda a: a["name"], track["track"]["artists"])),
-                    "images": track["track"]["album"]["images"]
+                    "images": track["track"]["album"]["images"],
+                    "id": song_id
                 }
         done += 1
         if done % 50 == 0:
