@@ -1,4 +1,5 @@
 import numpy as np
+import math
 
 from app.database import database
 from app.spotify import spotify
@@ -26,6 +27,7 @@ def merge_playlists(playlists_in):
     playlist_union = set()
     for tracks in track_ids:
         # create playlist union (union of tracks in input playlists)
+        print(len(tracks))
         playlist_union = playlist_union.union(tracks)
     playlist_intersect = track_ids[0]
     if len(tracks) > 1:
@@ -34,9 +36,9 @@ def merge_playlists(playlists_in):
             playlist_intersect = playlist_intersect.intersection(tracks)
             if len(playlist_intersect) == 0:
                 break
-    return find_merge(playlist_union, playlist_intersect)
+    return find_merge(track_ids, playlist_union, playlist_intersect)
 
-def find_merge(playlist_union, playlist_intersect):
+def find_merge(track_ids_list, playlist_union, playlist_intersect):
 
     songs_union = database.find_songs(list(playlist_union))
     song_df = defaultdict(int)
@@ -53,10 +55,12 @@ def find_merge(playlist_union, playlist_intersect):
                 playlist_song_count[playlist] += 1
 
     playlist_ids = sorted(playlist_song_count.keys(), key=lambda x: playlist_song_count[x], reverse=True)
-    try:
-        playlist_ids = playlist_ids[:250] + playlist_ids[-250:]
-    except:
-        playlist_ids = playlist_ids
+    TARGET = 2000
+    step = math.ceil(len(playlist_ids) / TARGET)
+    if(step == 0):
+        step = 1
+    idxs = list(range(0, len(playlist_ids), step))
+    playlist_ids = [playlist_ids[i] for i in idxs]
 
 
     #playlist_ids = list(set(flatten_playlists(playlists_1)))
@@ -77,12 +81,23 @@ def find_merge(playlist_union, playlist_intersect):
         # playlist is one of the playlists in database
         # playlist_ids is the list of ids in that playlist
         playlist_ids = set(list(map(get_id, playlist["tracks"])))
-        # playlists_intersect is the intersection of songs in this playlist
-        # and songs in the input playlist
         playlists_intersect = playlist_ids.intersection(playlist_union)
+        cos_sim = 999
+        cos_sim_len = 0
+        # tracks is the songs of one of input playlists
+        for tracks in track_ids_list:
+            # playlists_intersect is the intersection of songs in this playlist
+            # and songs in one of the input playlists
+            playlists_intersect_tracks = playlist_ids.intersection(tracks)
 
-        # find the cosine similarity of this playlist and the input playlists(' union)
-        cos_sim = len(playlists_intersect) / (len(playlist_ids) * len(playlist_union) + 0.00001)
+            # find the cosine similarity of this playlist and the input playlist
+            _cos_sim = len(playlists_intersect_tracks) / \
+                (np.sqrt(len(playlist_ids)) * np.sqrt(len(tracks)) + 0.00001)
+            if _cos_sim < cos_sim:
+                cos_sim = _cos_sim
+                cos_sim_len = len(tracks)
+        print(cos_sim_len)
+        print(cos_sim)
 
         # co occurance vector: 0 if song not in playlists_intersect and 1 if it is
         co_occur_vec = [1 if k in playlists_intersect else 0 for k in co_occur_keys]
@@ -125,7 +140,7 @@ def find_merge(playlist_union, playlist_intersect):
 
     idf = dict()
     for song in song_df:
-        idf[song] = np.log(doc_count/(1 + song_df[song])) + 1
+        idf[song] = np.log(doc_count/(0.5 + song_df[song] ** 2)) + 1
 
     songs_total_co_occur = []
     for i in range(0, len(co_occur)):
@@ -138,9 +153,14 @@ def find_merge(playlist_union, playlist_intersect):
     co_occur_top_10 = list(map(lambda total: total[2], sorted(songs_total_co_occur, reverse=True)[0:10]))
 
     # song_count = sorted(songs.keys(), key=lambda k: songs[k]["count"], reverse=True)
-    sim_songs_sort = sorted(sim_songs.keys(), key=lambda k: np.log(1 + sim_songs[k]*idf[k]), reverse=True)
+    sim_songs_sort = sorted(sim_songs.keys(), key=lambda k: sim_songs[k]*idf[k], reverse=True)
 
     top_50 = list(playlist_intersect) + sim_songs_sort[0:50]
+
+    for song in top_50:
+        print(songs[song]['name'])
+        print(idf[song])
+        print(song_df[song])
 
     # not really a top 50
     top_50_named = co_occur_top_10 + list(map(lambda k: (k in songs and songs[k] or "None"), top_50))
