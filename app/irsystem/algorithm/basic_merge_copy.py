@@ -29,7 +29,6 @@ def merge_playlists(playlists_in):
     playlist_union = set()
     for tracks in track_ids:
         # create playlist union (union of tracks in input playlists)
-        print(len(tracks))
         playlist_union = playlist_union.union(tracks)
     playlist_intersect = track_ids[0]
     if len(tracks) > 1:
@@ -57,7 +56,7 @@ def find_merge(track_ids_list, playlist_union, playlist_intersect):
                 playlist_song_count[playlist] += 1
 
     playlist_ids = sorted(playlist_song_count.keys(), key=lambda x: playlist_song_count[x], reverse=True)
-    TARGET = 2000
+    TARGET = 1000
     step = math.ceil(len(playlist_ids) / TARGET)
     if(step == 0):
         step = 1
@@ -98,8 +97,8 @@ def find_merge(track_ids_list, playlist_union, playlist_intersect):
             if _cos_sim < cos_sim:
                 cos_sim = _cos_sim
                 cos_sim_len = len(tracks)
-        print(cos_sim_len)
-        print(cos_sim)
+        if(cos_sim == 0):
+            continue
 
         # co occurance vector: 0 if song not in playlists_intersect and 1 if it is
         co_occur_vec = [1 if k in playlists_intersect else 0 for k in co_occur_keys]
@@ -159,11 +158,6 @@ def find_merge(track_ids_list, playlist_union, playlist_intersect):
     sim_songs_sort = sorted(sim_songs.keys(), key=lambda k: sim_songs[k]*idf[k], reverse=True)
 
     top_50 = list(playlist_intersect) + sim_songs_sort[0:50]
-
-    for song in top_50:
-        print(songs[song]['name'])
-        print(idf[song])
-        print(song_df[song])
 
     # not really a top 50
     top_50_named = co_occur_top_10 + list(map(lambda k: (k in songs and songs[k] or "None"), top_50))
