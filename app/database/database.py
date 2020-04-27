@@ -49,3 +49,10 @@ def add_song_playlist(id, playlist_id):
 
 def find_reddit_songs(): 
     return songs.find({"comments":{"$ne":None}})
+
+def find_songs(ids):
+    return songs.find({u"id":{"$in":ids}})
+
+# returns multiple playlists given playlist ids
+def find_playlists_ids(ids):
+    return playlists.find({u"id":{"$in":ids}})

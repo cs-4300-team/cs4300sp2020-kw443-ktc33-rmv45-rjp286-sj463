@@ -64,7 +64,10 @@ function output() {
     })
       .then(res => res.json())
       .then(songs => {
-        this.outputs = songs;
+        this.outputs = songs.output;
+        if(songs.created) {
+          this.output_playlist = songs.created;
+        }
         this.error_message = '';
         this.loading = false;
       })
@@ -82,6 +85,7 @@ function clickHome() {
   console.log("Home");
 }
 
+// ugly but easy
 const examplesString = `37i9dQZF1DX9s3cYAeKW5d=Hip-Hop%20Workout%20Mix&%3E%3E%3E37i9dQZF1DX48TTZL62Yht=Hip-Hop%20Favourites&%3E%3E%3E28ONiLZsrlTPUYxmC7ZJ0f=Hip-Hop%20Hits&%3E%3E%3E37i9dQZF1DX8WMG8VPSOJC=Country%20Kind%20of%20Love&>>>37i9dQZF1DWTwnEm1IYyoj=Soft%20Pop%20Hits&>>>37i9dQZF1DWXRqgorJj26U=Rock%20Classics`
 
 const app = new Vue({
@@ -107,7 +111,8 @@ const app = new Vue({
     loading: false,
     show_home: true,
     show_modal: false,
-    cur_item: null
+    cur_item: null,
+    output_playlist: undefined
   },
   methods: {
     addInput,

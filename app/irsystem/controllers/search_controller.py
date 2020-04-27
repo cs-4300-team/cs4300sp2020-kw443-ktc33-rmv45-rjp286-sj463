@@ -7,7 +7,25 @@ from flask import send_from_directory
 
 from app.spotify import spotify
 from app.irsystem.algorithm import basic_merge
+from app.irsystem.algorithm import basic_merge_copy
 from app.irsystem.algorithm import svd_text_mining
+
+import spotipy
+from spotipy import oauth2
+import os
+
+SCOPE = "playlist-modify-public"
+SPOTIPY_REDIRECT_URI = 'http://localhost:5000/admin'
+try:
+	if os.environ.get('ENV') == 'prod':
+		SPOTIPY_REDIRECT_URI = 'https://playlist-mixer.herokuapp.com/admin'
+except:
+	print("Not in production")
+SPOTIPY_CLIENT_ID = os.environ.get('SPOTIPY_CLIENT_ID')
+SPOTIPY_CLIENT_SECRET = os.environ.get('SPOTIPY_CLIENT_SECRET')
+
+sp_oauth = oauth2.SpotifyOAuth( SPOTIPY_CLIENT_ID, \
+	SPOTIPY_CLIENT_SECRET,SPOTIPY_REDIRECT_URI,scope=SCOPE,cache_path='.spotipyauthcache' )
 
 parser = reqparse.RequestParser()
 parser.add_argument('link', action='append')
@@ -33,7 +51,15 @@ def search():
 					
 		if args['get_playlist'] == "false": 
 			try:
-				return jsonify(basic_merge.merge_playlists(args['link']))
+				output = basic_merge_copy.merge_playlists(args['link'])
+				ids = list(map(lambda s: s["id"], filter(lambda s: "id" in s, output)))
+				created = spotify.create_playlist(ids)
+				to_send = {
+					"output": output
+				}
+				if created:
+					to_send["created"] = created
+				return jsonify(to_send)
 			except Exception as error:
 				print(error)
 				return error
@@ -52,6 +78,20 @@ def favicon():
 @irsystem.route('/about')
 def about():
 	return send_from_directory('templates', 'about.html')
+
+@irsystem.route('/admin')
+def admin():
+	try:
+		code = sp_oauth.parse_response_code(request.url)
+		if code:
+			token_info = sp_oauth.get_access_token(code)
+			access_token = token_info['access_token']
+			sp = spotipy.Spotify(access_token)
+			spotify.try_login_cached()
+			return render_template("admin.html", good="Authorized", authorize=sp_oauth.get_authorize_url())
+	except:
+		print("No code found")
+	return render_template("admin.html", authorize=sp_oauth.get_authorize_url())
 
 @irsystem.route('/test')
 def test_case():

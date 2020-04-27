@@ -25,3 +25,5 @@ env.bat
 env/**
 # mac artifact
 **DS_Store
+.env**
+.spotipyauthcache
