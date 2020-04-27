@@ -393,3 +393,8 @@ div .song_display:hover {
     text-shadow: 0 0 20px #fafafa, 0 0 5px #bbf;
   }
 }
+
+.noclick {
+  cursor: default;
+  padding: 0px 10px;
+}
