@@ -7,6 +7,7 @@ certifi==2019.11.28
 cffi==1.14.0
 chardet==3.0.4
 Click==7.0
+cmake==3.17.1
 Flask==1.1.1
 Flask-Bcrypt==0.7.1
 Flask-HTTPAuth==3.3.0
@@ -30,10 +31,12 @@ Mako==1.1.1
 MarkupSafe==1.1.1
 marshmallow==3.5.0
 marshmallow-sqlalchemy==0.22.2
+MulticoreTSNE==0.1
 mysql-connector==2.2.9
 nltk==3.4.5
 numpy==1.18.1
 packaging==20.1
+psaw==0.0.12
 psycopg2==2.7.7
 pycparser==2.19
 PyJWT==1.4.0
