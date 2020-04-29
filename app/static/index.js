@@ -65,7 +65,7 @@ function output() {
       .then(res => res.json())
       .then(songs => {
         this.outputs = songs.output;
-        if(songs.created) {
+        if (songs.created) {
           this.output_playlist = songs.created;
         }
         this.error_message = '';

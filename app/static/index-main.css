@@ -236,6 +236,9 @@ div .song_display:hover {
   vertical-align: top;
   display:inline-block;
 }
+.song_info a {
+  color:white; 
+}
 /* .song_display::-webkit-scrollbar
 {
 	height: 7px;
