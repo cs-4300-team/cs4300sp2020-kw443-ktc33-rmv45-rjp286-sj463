@@ -23,7 +23,7 @@
           <li><span><a href="/">home</a></span></li>
           <li><span><a href="/about">about</a></span></li>
           <li><span class="noclick">|</span></li>
-          <li><span><a href="https://playlist-mixer-p1.herokuapp.com/">Prototype 1</a></span></li>
+          <li><span><a href="https://playlist-mixer-p1.herokuapp.com/">prototype 1</a></span></li>
         </ul>
       </div>
 
@@ -37,7 +37,8 @@
           <!-- <textarea cols="100">Enter input here.</textarea> -->
           <input id="input_text" type="text" v-bind:size="stuckPopup ? 50 : 75" placeholder="Add Your Playlists."
             v-model="input">
-          <button type="button" v-on:click="addInput" class="btn add_btn"><i class="fas fa-plus"></i></button>
+          <button id="add_button" type="button" v-on:click="addInput" class="btn add_btn"><i
+              class="fas fa-plus"></i></button>
           <span id="stuck" v-on:click="stuckPopup = !stuckPopup" v-cloak>Stuck?</span>
 
           <div id="stuck_popup" v-if="stuckPopup" v-cloak>
@@ -52,8 +53,13 @@
           </div>
         </div>
 
-        <span id="error_label" v-if="error_message" v-cloak>{{ error_message }}<br></span>
+        <div>
+          <label id="playlist_length">playlist length will be 120 minutes: </label>
+          <input type="range" min="10" max="100" value="40" onchange="updateSlider(this.value)">
+        </div>
 
+        <span id="error_label" v-if="error_message" v-cloak>{{ error_message }}<br></span>
+        <br>
         <span v-if="Object.keys(inputSet).length > 0" v-cloak>Your Playlists: </span>
         <div style="max-width:75%" id="playlist_container" v-cloak>
           <div v-for="(val, input_key) in inputSet" :key=input_key v-cloak>
@@ -74,7 +80,7 @@
             v-on:click="show_modal=true;cur_item=item">
             <img v-bind:src="image(item)" width="50px" height="50px" />
             <div class="song_info">
-              <a v-bind:href="'https://open.spotify.com/track/' + item.id">{{ item.name }} </a><br>
+              <a v-bind:href="'https://open.spotify.com/track/' + item.id" target="_blank">{{ item.name }} </a><br>
               <span class="song_artists">{{ item.artists && item.artists.join(', ') || 'Unknown Artist'}}</span>
             </div>
           </div>
@@ -97,8 +103,8 @@
         <div class="modal-body" v-cloak>
           <div class="modal-content" id="modal-content" v-cloak>
             <div v-on:click="show_modal=false" class="close_btn" v-cloak> <i class="fas fa-times"></i></div>
-            <div class="modal-header" v-cloak> <a
-                v-bind:href="'https://open.spotify.com/track/' + cur_item.id">{{ cur_item.name }} </a></div>
+            <div class="modal-header" v-cloak> <a v-bind:href="'https://open.spotify.com/track/' + cur_item.id"
+                target="_blank">{{ cur_item.name }} </a></div>
             <div class="modal-desc" v-cloak>
               <div style="text-align:left;max-height:100%;overflow:auto;display:flex" v-cloak>
                 <div style="margin:0"><img id="songpic" v-bind:src="image(cur_item)" height="auto" /></div>
