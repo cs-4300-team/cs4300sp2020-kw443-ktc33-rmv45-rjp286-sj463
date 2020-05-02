@@ -19,7 +19,7 @@ def get_id(track):
     }
     return song_id
 
-def merge_playlists(playlists_in):
+def merge_playlists(playlists_in, target_len = 50):
     songs.clear()
     # turn input playlists into a list of their tracks
     playlist_ids = list(map(lambda pl: pl.lstrip('https://open.spotify.com/playlist/'), playlists_in))
@@ -37,14 +37,32 @@ def merge_playlists(playlists_in):
             playlist_intersect = playlist_intersect.intersection(tracks)
             if len(playlist_intersect) == 0:
                 break
-    return find_merge(track_ids, playlist_union, playlist_intersect)
+    return find_merge(track_ids, playlist_union, playlist_intersect, track_ids, target_len)
 
-def find_merge(track_ids_list, playlist_union, playlist_intersect):
+def find_merge(track_ids_list, playlist_union, playlist_intersect, track_ids, target_len = 50):
+    svd_sim = defaultdict(float)
+    songs_with_similar = 0
 
     songs_union = database.find_songs(list(playlist_union))
     song_df = defaultdict(int)
 
-    playlists_1 = list(map(lambda x: x["playlists"], songs_union))
+    playlists_1 = []
+    pl_set = None
+    for song in songs_union:
+        count = 0
+        for pl in track_ids:
+            if song["id"] in pl:
+                count+=1
+            if count > 1:
+                break
+        if count == 0:
+            continue
+        playlists_1.append(song["playlists"])
+        if "similar" in song:
+            songs_with_similar+=1
+            for sim in song["similar"]:
+                svd_sim[sim["id"]] += sim["score"]
+    # playlists_1 = list(map(lambda x: x["playlists"], songs_union))
     # bless up https://stackoverflow.com/questions/952914/how-to-make-a-flat-list-out-of-list-of-lists
     #flatten_playlists = lambda l: [item for sublist in l for item in sublist]
     playlist_song_count = dict()
@@ -101,7 +119,8 @@ def find_merge(track_ids_list, playlist_union, playlist_intersect):
             continue
 
         # co occurance vector: 0 if song not in playlists_intersect and 1 if it is
-        co_occur_vec = [1 if k in playlists_intersect else 0 for k in co_occur_keys]
+        co_occur_vec = \
+            [1 if 0 not in [1 if k in t else 0 for t in track_ids] else 0 for k in co_occur_keys]
 
         # weight input songs by co_occur_vec
         # this logic is that songs that co-occur with other input
@@ -140,6 +159,10 @@ def find_merge(track_ids_list, playlist_union, playlist_intersect):
         if done % 50 == 0:
             print(done)
 
+    CO_OCCUR_WEIGHT = 0.2
+    COS_SIM_WEIGHT = 0.4
+    SVD_WEIGHT = 0.4
+
     idf = dict()
     for song in song_df:
         idf[song] = np.log(doc_count/(1 + song_df[song])) + 1
@@ -152,6 +175,8 @@ def find_merge(track_ids_list, playlist_union, playlist_intersect):
         song= songs[song_id] if song_id in songs else "None"
         songs_total_co_occur.append((total_co_occur, song_id, song))
 
+    svd_top = sorted(list(map(lambda k: (svd_sim[k], k), svd_sim.keys())), reverse=True)
+
     co_occur_top_10 = list(map(lambda total: total[2], sorted(songs_total_co_occur, reverse=True)[0:10]))
 
     # song_count = sorted(songs.keys(), key=lambda k: songs[k]["count"], reverse=True)
@@ -161,7 +186,53 @@ def find_merge(track_ids_list, playlist_union, playlist_intersect):
 
     # not really a top 50
     top_50_named = co_occur_top_10 + list(map(lambda k: (k in songs and songs[k] or "None"), top_50))
-    return top_50_named
+
+    reasons = {
+        "intersect": "Intersection: Song is in the intersection of input playlists",
+        "co_occur": "Co-Occurance: Song co-occurs strongly (in other playlists) with songs in the input playlists",
+        "cos_sim": "Cosine Similarity: Song occurs frequently in similar playlists to the input playlists",
+        "svd_sim": "Social: Song is discussed similarly to songs in the input playlist"
+    }
+
+    output = set()
+    song_id_reason = {}
+    # first grab intersection
+    for song_id in playlist_intersect:
+        if song_id in songs:
+            output.add(song_id)
+            song_id_reason[song_id] = "intersect"
+    # now grab co occur
+    co_occur_left = math.ceil((target_len) * CO_OCCUR_WEIGHT)
+    for total, song_id, song in songs_total_co_occur:
+        if co_occur_left <= 0:
+            break
+        if song_id not in output and song_id in songs:
+            output.add(song_id)
+            song_id_reason[song_id] = "co_occur"
+            co_occur_left -= 1
+    # next grab cosine similarity
+    cos_sim_left = math.ceil((target_len) * COS_SIM_WEIGHT)
+    for song_id in sim_songs_sort:
+        if cos_sim_left <= 0:
+            break
+        if song_id not in output and song_id in songs:
+            output.add(song_id)
+            song_id_reason[song_id] = "cos_sim"
+            cos_sim_left -= 1
+    # finally grab cosine similarity
+    svd_left = math.ceil((target_len) * SVD_WEIGHT)
+    for score, song_id in svd_top:
+        if svd_left <= 0:
+            break
+        if song_id not in output and song_id in songs:
+            output.add(song_id)
+            song_id_reason[song_id] = "svd_sim"
+            svd_left -= 1
+
+    for song_id in song_id_reason:
+        songs[song_id]["reason"] = reasons[song_id_reason[song_id]]
+
+    return list(map(lambda k: (k in songs and songs[k] or "None"), list(output)))
 
 # playlist1 = "https://open.spotify.com/playlist/37i9dQZF1DWTwnEm1IYyoj"
 # playlist2 = "https://open.spotify.com/playlist/37i9dQZF1DX9s3cYAeKW5d"
