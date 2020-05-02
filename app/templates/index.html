@@ -98,7 +98,7 @@
           <div class="modal-content" id="modal-content" v-cloak>
             <div v-on:click="show_modal=false" class="close_btn" v-cloak> <i class="fas fa-times"></i></div>
             <div class="modal-header" v-cloak>{{cur_item.name}}</div>
-            <div class="modal-desc" v-cloak>
+            <div class="modal-desc" v-cloak v-if="false">
               <div style="text-align:left;max-height:100%;overflow:auto;display:flex" v-cloak>
                 <div style="margin:0"><img id="songpic" v-bind:src="image(cur_item)" height="auto" /></div>
                 <div style="margin:0; flex-grow:1; text-align:left">Artists:
@@ -106,6 +106,9 @@
                 </div>
                 <!-- {{ cur_item }} -->
               </div>
+            </div>
+            <div class="modal-playback" v-cloak>
+              <iframe v-bind:src="'https://open.spotify.com/embed/track/' +  cur_item.id " width="300" height="380" frameborder="0" allowtransparency="true" allow="encrypted-media"></iframe>
             </div>
             <div class="modal-reason" v-cloak>
               {{ cur_item.reason || ''}}
