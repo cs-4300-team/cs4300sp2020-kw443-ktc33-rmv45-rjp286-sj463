@@ -36,7 +36,7 @@
         <div class="comment-bar">
           <!-- <textarea cols="100">Enter input here.</textarea> -->
           <input id="input_text" type="text" v-bind:size="stuckPopup ? 50 : 75" placeholder="Add Your Playlists."
-            v-model="input">
+            v-model="input" v-on:keyup.enter="addInput">
           <button id="add_button" type="button" v-on:click="addInput" class="btn add_btn"><i
               class="fas fa-plus"></i></button>
           <span id="stuck" v-on:click="stuckPopup = !stuckPopup" v-cloak>Stuck?</span>
