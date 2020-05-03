@@ -1,3 +1,17 @@
+Vue.directive('click-outside', {
+  bind: function (el, binding, vnode) {
+    this.event = function (event) {
+      if (!(el == event.target || el.contains(event.target))) {
+        vnode.context[binding.expression](event);
+      }
+    };
+    document.body.addEventListener('click', this.event)
+  },
+  unbind: function (el) {
+    document.body.removeEventListener('click', this.event)
+  },
+});
+
 // var inputSet = new Set();
 function addInput() {
   // https://stackoverflow.com/questions/17650776/add-remove-html-inside-div-using-javascript
@@ -47,11 +61,15 @@ function output() {
     this.error_message = 'Please add some playlists first.'
   }
   else {
-    data += "&get_playlist=false";
+    data += "&get_playlist=false" + "&playlist_length=" + this.playlist_length;
     this.stuckPopup = false;
-    this.display_lyric = this.lyrics[Math.floor(Math.random() * (this.lyrics.length))]
     this.loading = true;
     this.show_home = false;
+
+    this.display_lyric = this.lyrics[Math.floor(Math.random() * (this.lyrics.length))]
+    let interval = setInterval(() => {
+      this.display_lyric = this.lyrics[Math.floor(Math.random() * (this.lyrics.length))]
+    }, 5000)
 
     /* Using modern fetch api which provides a promise:
     https://developer.mozilla.org/en-US/docs/Web/API/Fetch_API/Using_Fetch */
@@ -70,6 +88,7 @@ function output() {
         }
         this.error_message = '';
         this.loading = false;
+        clearInterval(interval)
       })
       .catch(e => {
         console.log("ERROR");
@@ -99,6 +118,24 @@ document.addEventListener("DOMContentLoaded", function (event) {
 // ugly but easy
 const examplesString = `37i9dQZF1DX9s3cYAeKW5d=Hip-Hop%20Workout%20Mix&%3E%3E%3E37i9dQZF1DX48TTZL62Yht=Hip-Hop%20Favourites&%3E%3E%3E28ONiLZsrlTPUYxmC7ZJ0f=Hip-Hop%20Hits&%3E%3E%3E37i9dQZF1DX8WMG8VPSOJC=Country%20Kind%20of%20Love&>>>37i9dQZF1DWTwnEm1IYyoj=Soft%20Pop%20Hits&>>>37i9dQZF1DWXRqgorJj26U=Rock%20Classics`
 
+const lyrics = [
+{ lyric: "Do you ever feel like a plastic bag / Drifting through the wind / Wanting to start again?", artist: 'Katy Perry' },
+{ lyric: "But it's just the price I pay / Destiny is calling me / Open up my eager eyes / 'Cause I'm Mr. Brightside.", artist: 'The Killers' },
+{ lyric: "Some will win, some will lose / Some were born to sing the blues / Oh, the movie never ends / It goes on and on, and on, and on.", artist: 'Journey' },
+{ lyric: "Hey now, you're an all-star, get your game on, go play / Hey now, you're a rock star, get the show on, get paid.", artist: 'Smash Mouth' },
+{ lyric: "She say, \"Do you love me?\" I tell her, \"Only partly\" / I only love my bed and my momma, I'm sorry.", artist: 'Drake' },
+{ lyric: "The words of the prophets are written on the subway walls", artist: "Simon and Garfunkel" },
+{ lyric: "I want something good to die for, to make it beautiful to live", artist: "Queens of the Stone Age" },
+{ lyric: "Come on you stranger, you legend, you martyr, and shine!", artist: "Pink Floyd" },
+{ lyric: "Don't criticize what you can't understand", artist: "Bob Dylan" },
+{ lyric: "I'd trade all my tomorrows for one single yesterday", artist: "Kris Kristofferson" },
+{ lyric: "Gucci gang, Gucci gang, Gucci gang, Gucci gang (Gucci gang)", artist: "Lil Pump"},
+{ lyric: "Couldn't afford a car, so she named her daughter Alexis.", artist: "Kanye West"},
+{ lyric: "Never gonna give you up / Never gonna let you down / Never gonna run around and desert you", artist: "Rick Astley"},
+{ lyric: "Life is good, you know what I mean?", artist: "Future" },
+{ lyric: "I woke up in a new Bugatti", artist: "Ace Hood" },
+{ lyric: "I came up, made a milly, spent it on a rollie / Stackin gouda, feta, chedda cheese and ravioli", artist: "Wes Walker" }]
+
 const app = new Vue({
   el: '#app',
   data: {
@@ -111,19 +148,14 @@ const app = new Vue({
       .map(([id, name]) => ({ id, name })),
     error_message: '',
     stuckPopup: false,
-    lyrics: [
-      { lyric: "Do you ever feel like a plastic bag / Drifting through the wind / Wanting to start again?", artist: 'Katy Perry' },
-      { lyric: "But it's just the price I pay / Destiny is calling me / Open up my eager eyes / 'Cause I'm Mr. Brightside.", artist: 'The Killers' },
-      { lyric: "Some will win, some will lose / Some were born to sing the blues / Oh, the movie never ends / It goes on and on, and on, and on.", artist: 'Journey' },
-      { lyric: "Hey now, you're an all-star, get your game on, go play / Hey now, you're a rock star, get the show on, get paid.", artist: 'Smash Mouth' },
-      { lyric: "She say, \"Do you love me?\" I tell her, \"Only partly\" / I only love my bed and my momma, I'm sorry.", artist: 'Drake' }
-    ],
+    lyrics,
     display_lyric: null,
     loading: false,
     show_home: true,
     show_modal: false,
     cur_item: null,
-    output_playlist: undefined
+    output_playlist: undefined,
+    playlist_length: 50
   },
   methods: {
     addInput,
@@ -156,6 +188,13 @@ const app = new Vue({
     setExample(example) {
       this.input = 'https://open.spotify.com/playlist/' + example.id;
       this.addInput();
+    },
+    show(item) {
+      this.cur_item = item;
+      this.show_modal = true;
+    },
+    hide() {
+      this.show_modal = false;
     }
   },
   computed: {
@@ -177,6 +216,5 @@ const app = new Vue({
     } catch (e) {
       window.location.hash = ''
     }
-
   }
 });

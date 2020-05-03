@@ -56,3 +56,6 @@ def find_songs(ids):
 # returns multiple playlists given playlist ids
 def find_playlists_ids(ids):
     return playlists.find({u"id":{"$in":ids}})
+
+def put_sim_songs(id, similar):
+    songs.update_one({"id": id}, {"$set": {"similar": similar}})
