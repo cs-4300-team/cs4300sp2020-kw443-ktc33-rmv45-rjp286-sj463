@@ -52,7 +52,7 @@ def search():
 					
 		if args['get_playlist'] == "false": 
 			try:
-				output = basic_merge_copy.merge_playlists(args['link'], args['playlist_length'])
+				output = basic_merge_copy.merge_playlists(args['link'], int(args['playlist_length']))
 				ids = list(map(lambda s: s["id"], filter(lambda s: "id" in s, output)))
 				created = spotify.create_playlist(ids)
 				to_send = {
