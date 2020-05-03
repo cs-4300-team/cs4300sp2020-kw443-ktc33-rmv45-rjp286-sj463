@@ -47,7 +47,7 @@ function output() {
     this.error_message = 'Please add some playlists first.'
   }
   else {
-    data += "&get_playlist=false";
+    data += "&get_playlist=false" + "&playlist_length=" + this.playlist_length;
     this.stuckPopup = false;
     this.display_lyric = this.lyrics[Math.floor(Math.random() * (this.lyrics.length))]
     this.loading = true;
@@ -123,7 +123,8 @@ const app = new Vue({
     show_home: true,
     show_modal: false,
     cur_item: null,
-    output_playlist: undefined
+    output_playlist: undefined,
+    playlist_length: 50
   },
   methods: {
     addInput,

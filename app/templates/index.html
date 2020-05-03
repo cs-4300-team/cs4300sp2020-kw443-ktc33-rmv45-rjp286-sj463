@@ -55,7 +55,7 @@
 
         <div>
           <label id="playlist_length">playlist length will be 120 minutes: </label>
-          <input type="range" min="10" max="100" value="40" onchange="updateSlider(this.value)">
+          <input type="range" min="10" max="100" v-model="playlist_length">
         </div>
 
         <span id="error_label" v-if="error_message" v-cloak>{{ error_message }}<br></span>
@@ -106,7 +106,8 @@
             <div class="modal-header" v-cloak> <a v-bind:href="'https://open.spotify.com/track/' + cur_item.id"
                 target="_blank">{{ cur_item.name }} </a></div>
             <div class="modal-playback" v-cloak>
-              <iframe v-bind:src="'https://open.spotify.com/embed/track/' +  cur_item.id " width="300" height="380" frameborder="0" allowtransparency="true" allow="encrypted-media"></iframe>
+              <iframe v-bind:src="'https://open.spotify.com/embed/track/' +  cur_item.id " width="300" height="240"
+                frameborder="0" allowtransparency="true" allow="encrypted-media"></iframe>
             </div>
             <div class="modal-reason" v-cloak>
               {{ cur_item.reason || ''}}

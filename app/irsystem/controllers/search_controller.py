@@ -30,6 +30,7 @@ sp_oauth = oauth2.SpotifyOAuth( SPOTIPY_CLIENT_ID, \
 parser = reqparse.RequestParser()
 parser.add_argument('link', action='append')
 parser.add_argument('get_playlist')
+parser.add_argument('playlist_length')
 
 project_name = "Ilan's Cool Project Template"
 net_id = "Ilan Filonenko: if56"
@@ -51,7 +52,7 @@ def search():
 					
 		if args['get_playlist'] == "false": 
 			try:
-				output = basic_merge_copy.merge_playlists(args['link'])
+				output = basic_merge_copy.merge_playlists(args['link'], args['playlist_length'])
 				ids = list(map(lambda s: s["id"], filter(lambda s: "id" in s, output)))
 				created = spotify.create_playlist(ids)
 				to_send = {
