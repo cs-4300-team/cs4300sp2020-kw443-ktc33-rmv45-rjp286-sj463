@@ -1,3 +1,17 @@
+Vue.directive('click-outside', {
+  bind: function (el, binding, vnode) {
+    this.event = function (event) {
+      if (!(el == event.target || el.contains(event.target))) {
+        vnode.context[binding.expression](event);
+      }
+    };
+    document.body.addEventListener('click', this.event)
+  },
+  unbind: function (el) {
+    document.body.removeEventListener('click', this.event)
+  },
+});
+
 // var inputSet = new Set();
 function addInput() {
   // https://stackoverflow.com/questions/17650776/add-remove-html-inside-div-using-javascript
@@ -157,6 +171,13 @@ const app = new Vue({
     setExample(example) {
       this.input = 'https://open.spotify.com/playlist/' + example.id;
       this.addInput();
+    },
+    show(item) {
+      this.cur_item = item;
+      this.show_modal = true;
+    },
+    hide() {
+      this.show_modal = false;
     }
   },
   computed: {

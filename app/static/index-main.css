@@ -69,6 +69,14 @@ h2 {
   font-family:Lineto-Med; 
 }
 
+a {
+  text-decoration:none; 
+}
+
+a:hover {
+  text-decoration:underline; 
+}
+
 #description {
   font-size: 18px; 
 }
@@ -227,6 +235,7 @@ div .song_display {
 }
 div .song_display:hover {
   cursor:pointer; 
+  background: rgba(255,255,255,0.4); 
 }
 .song_artists {
   color: rgba(0,0,0,0.6);
@@ -329,6 +338,9 @@ div .song_display:hover {
   font-size:30px; 
   padding: 5px 0px;
   margin:0; 
+}
+.modal-header a {
+  color:#575757; 
 }
 .modal-desc {
   overflow:auto; 

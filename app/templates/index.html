@@ -76,8 +76,7 @@
       <div id="output_container" v-if="!show_home" v-cloak>
         <h2 v-if="outputs.length">our selection:</h2>
         <div class="scroller" style="overflow:auto; max-height:95%" v-cloak>
-          <div class="song_display" v-for="item in outputs" v-if="item && item.name"
-            v-on:click="show_modal=true;cur_item=item">
+          <div class="song_display" v-for="item in outputs" v-if="item && item.name" @click.stop="show(item)">
             <img v-bind:src="image(item)" width="50px" height="50px" />
             <div class="song_info">
               <a v-bind:href="'https://open.spotify.com/track/' + item.id" target="_blank">{{ item.name }} </a><br>
@@ -101,8 +100,8 @@
     <transition name="fade">
       <div class="modal" id="modal" v-if="show_modal" v-cloak>
         <div class="modal-body" v-cloak>
-          <div class="modal-content" id="modal-content" v-cloak>
-            <div v-on:click="show_modal=false" class="close_btn" v-cloak> <i class="fas fa-times"></i></div>
+          <div class="modal-content" id="modal-content" v-cloak v-click-outside="hide">
+            <div v-on:click="hide" class="close_btn" v-cloak> <i class="fas fa-times"></i></div>
             <div class="modal-header" v-cloak> <a v-bind:href="'https://open.spotify.com/track/' + cur_item.id"
                 target="_blank">{{ cur_item.name }} </a></div>
             <div class="modal-playback" v-cloak>
