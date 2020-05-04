@@ -76,51 +76,51 @@
       <!-- Second Flex Box -->
       <div id="output_container" v-if="!show_home" v-cloak>
         <h2 v-if="outputs.length">our selection:</h2>
-        <div class="scroller" style="overflow:auto; max-height:95%" v-cloak>
-          <div class="song_display" v-for="item in outputs" v-if="item && item.name" @click.stop="show(item)">
-            <img v-bind:src="image(item)" width="50px" height="50px" />
-            <div class="song_info">
-              <a v-bind:href="'https://open.spotify.com/track/' + item.id" target="_blank">{{ item.name }} </a><br>
-              <span class="song_artists">{{ item.artists && item.artists.join(', ') || 'Unknown Artist'}}</span>
-            </div>
-          </div>
-        </div>
-        <div id="created_playlist" v-if="output_playlist">
-          <a v-bind:href="output_playlist" target="_blank">View Playlist on Spotify</a>
-        </div>
-      </div>
-    </div>
-
-    <div id="loading" v-if="loading" v-cloak>
-      {{ display_lyric.lyric }} <br>
-      -- {{ display_lyric.artist }} <br>
-      <img src="/static/img/music.gif" width="10%" height="auto">
-    </div>
-
-    <!-- Modal Popup for displaying song information -->
-    <transition name="fade">
-      <div class="modal" id="modal" v-if="show_modal" v-cloak>
-        <div class="modal-body" v-cloak>
-          <div class="modal-content" id="modal-content" v-cloak v-click-outside="hide">
-            <div v-on:click="hide" class="close_btn" v-cloak> <i class="fas fa-times"></i></div>
-            <div class="modal-header" v-cloak> <a v-bind:href="'https://open.spotify.com/track/' + cur_item.id"
-                target="_blank">{{ cur_item.name }} </a></div>
-            <div class="modal-playback" v-cloak>
-              <iframe v-bind:src="'https://open.spotify.com/embed/track/' +  cur_item.id " width="300" height="240"
-                frameborder="0" allowtransparency="true" allow="encrypted-media"></iframe>
-            </div>
-            <div class="modal-reason" v-cloak>
-              {{ cur_item.reason || ''}}
-            </div>
+        <div class="scroller" style="overflow:auto; max-height:85%" v-cloak></div>
+        <div class="song_display" v-for="item in outputs" v-if="item && item.name" @click.stop="show(item)">
+          <img v-bind:src="image(item)" width="50px" height="50px" />
+          <div class="song_info">
+            <a v-bind:href="'https://open.spotify.com/track/' + item.id" target="_blank">{{ item.name }} </a><br>
+            <span class="song_artists">{{ item.artists && item.artists.join(', ') || 'Unknown Artist'}}</span>
           </div>
         </div>
       </div>
-    </transition>
-
-    <div id="footer">
-      Created by: Katelin Chan (ktc33), Salil Jajodia (sj463), Ryan Pappa (rjp286), Ryan Vaccariello (rmv45), Keely Wan
-      (kw443)
+      <div id="created_playlist" v-if="output_playlist">
+        <a v-bind:href="output_playlist" target="_blank">View Playlist on Spotify</a>
+      </div>
     </div>
+  </div>
+
+  <div id="loading" v-if="loading" v-cloak>
+    {{ display_lyric.lyric }} <br>
+    -- {{ display_lyric.artist }} <br>
+    <img src="/static/img/music.gif" width="10%" height="auto">
+  </div>
+
+  <!-- Modal Popup for displaying song information -->
+  <transition name="fade">
+    <div class="modal" id="modal" v-if="show_modal" v-cloak>
+      <div class="modal-body" v-cloak>
+        <div class="modal-content" id="modal-content" v-cloak v-click-outside="hide">
+          <div v-on:click="hide" class="close_btn" v-cloak> <i class="fas fa-times"></i></div>
+          <div class="modal-header" v-cloak> <a v-bind:href="'https://open.spotify.com/track/' + cur_item.id"
+              target="_blank">{{ cur_item.name }} </a></div>
+          <div class="modal-playback" v-cloak>
+            <iframe v-bind:src="'https://open.spotify.com/embed/track/' +  cur_item.id " width="300" height="240"
+              frameborder="0" allowtransparency="true" allow="encrypted-media"></iframe>
+          </div>
+          <div class="modal-reason" v-cloak>
+            {{ cur_item.reason || ''}}
+          </div>
+        </div>
+      </div>
+    </div>
+  </transition>
+
+  <div id="footer">
+    Created by: Katelin Chan (ktc33), Salil Jajodia (sj463), Ryan Pappa (rjp286), Ryan Vaccariello (rmv45), Keely Wan
+    (kw443)
+  </div>
   </div>
   <script src="/static/index.js"></script>
 </body>
