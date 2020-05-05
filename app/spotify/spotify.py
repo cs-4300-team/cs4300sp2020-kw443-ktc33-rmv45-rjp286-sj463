@@ -74,6 +74,7 @@ try_login_cached()
 def create_playlist(song_ids):
     global authed_spotify
     try:
+        try_login_cached()
         if authed_spotify:
             me = authed_spotify.me()
             now = datetime.now()
@@ -82,6 +83,8 @@ def create_playlist(song_ids):
             authed_spotify.user_playlist_add_tracks(me["id"], pl["id"], song_ids)
             print(pl["external_urls"]["spotify"])
             return pl["external_urls"]["spotify"]
+        else:
+            print("No authed spotify :/")
     except Exception as e:
         print("Error creating playlist")
         print(e)
